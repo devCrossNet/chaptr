@@ -1,0 +1,11 @@
+.DS_Store
+.idea
+node_modules
+dist
+npm-debug.log
+coverage
+tools/**/*.js
+cypress/screenshots
+cypress/videos
+storybook-static
+logs

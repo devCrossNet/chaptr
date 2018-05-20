@@ -1,0 +1,25 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
+    "vue"
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "env",
+          {
+            "targets": {
+              "node": 8
+            }
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+import { {{ properCase moduleName }}Mutations }                   from './mutations';
+import { {{ properCase moduleName }}DefaultState, I{{ properCase moduleName }}State } from './state';
+import { cloneDeep }                          from 'lodash';
+
+describe('{{ properCase moduleName }}Mutations', () => {
+  let testState: I{{ properCase moduleName }}State;
+
+  beforeEach(() => {
+    testState = cloneDeep({{ properCase moduleName }}DefaultState);
+  });
+
+  test('it should set the count', () => {
+    {{ properCase moduleName }}Mutations.SET_COUNT(testState, 1337);
+    expect(testState.count).toBe(1337);
+  });
+
+  test('it should set increment pending', () => {
+    {{ properCase moduleName }}Mutations.SET_INCREMENT_PENDING(testState, true);
+    expect(testState.incrementPending).toBe(true);
+  });
+
+  test('it should set decrement pending', () => {
+    {{ properCase moduleName }}Mutations.SET_DECREMENT_PENDING(testState, true);
+    expect(testState.decrementPending).toBe(true);
+  });
+
+});

@@ -1,0 +1,41 @@
+import { ActionContext } from 'vuex';
+import { I{{ properCase moduleName }}State } from './state';
+import { HttpService }   from '../shared/services/HttpService';
+import { AxiosResponse } from 'axios';
+
+export interface I{{ properCase moduleName }}Response {
+  count: number;
+}
+
+export interface I{{ properCase moduleName }}Actions {
+  increment(context: ActionContext<I{{ properCase moduleName }}State, I{{ properCase moduleName }}State>): Promise<any>;
+
+  decrement(context: ActionContext<I{{ properCase moduleName }}State, I{{ properCase moduleName }}State>): Promise<any>;
+}
+
+export const {{ properCase moduleName }}Actions: I{{ properCase moduleName }}Actions = {
+  increment({ commit, state }: ActionContext<I{{ properCase moduleName }}State, I{{ properCase moduleName }}State>): Promise<any> {
+    commit('SET_INCREMENT_PENDING', true);
+
+    return HttpService
+    .put('/counter/increment', { count: state.count })
+    .then((res: AxiosResponse<I{{ properCase moduleName }}Response>) => {
+      commit('SET_COUNT', res.data.count);
+      commit('SET_INCREMENT_PENDING', false);
+    })
+    .catch(() => {
+      commit('SET_INCREMENT_PENDING', false);
+    });
+  },
+  decrement({ commit, state }: ActionContext<I{{ properCase moduleName }}State, I{{ properCase moduleName }}State>): Promise<any> {
+    commit('SET_DECREMENT_PENDING', true);
+
+    return HttpService
+    .put('/counter/decrement', { count: state.count })
+    .then((res: AxiosResponse<I{{ properCase moduleName }}Response>) => {
+      commit('SET_COUNT', res.data.count);
+      commit('SET_DECREMENT_PENDING', false);
+    })
+    .catch(() => commit('SET_DECREMENT_PENDING', false));
+  },
+};
