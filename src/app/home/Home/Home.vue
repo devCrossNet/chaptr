@@ -44,26 +44,62 @@
         @click="loadState"
         icon="upload"
         :aria-label="$t('common.load.State' /* Load current State */)" />
+      <vue-button
+        @click="shareState"
+        icon="share"
+        :aria-label="$t('common.share.State' /* Share current State */)" />
+      <vue-button
+        @click="show = true"
+        icon="keyboard"
+        :aria-label="$t('common.share.State' /* Share current State */)" />
     </vue-mobile-menu>
+
+    <vue-modal :show="show" :class="$style.modal">
+      <vue-input
+        name="code"
+        id="code"
+        placeholder="code"
+        v-model="code"
+        autofocus
+      />
+      <vue-button
+        accent
+        aria-label="Restore Stories"
+        @click="loadStateFromServer()"
+        :disabled="code.length > 6"
+      >
+        Restore
+      </vue-button>
+      <vue-button
+        aria-label="Cancel"
+        @click="show = false"
+      >
+        Cancel
+      </vue-button>
+    </vue-modal>
   </div>
 </template>
 
 <script lang="ts">
-  import { mapGetters } from 'vuex';
-  import VueGrid        from '../../shared/components/VueGrid/VueGrid';
-  import VueGridRow     from '../../shared/components/VueGridRow/VueGridRow';
-  import VueGridItem    from '../../shared/components/VueGridItem/VueGridItem';
-  import VueButton      from '../../shared/components/VueButton/VueButton';
-  import VueMobileMenu  from '../../shared/components/VueMobileMenu/VueMobileMenu';
-  import cloneDeep      from 'lodash/cloneDeep';
-  import merge          from 'lodash/merge';
-  import { IState }     from '../../state';
+  import { mapGetters }      from 'vuex';
+  import VueGrid             from '../../shared/components/VueGrid/VueGrid';
+  import VueGridRow          from '../../shared/components/VueGridRow/VueGridRow';
+  import VueGridItem         from '../../shared/components/VueGridItem/VueGridItem';
+  import VueButton           from '../../shared/components/VueButton/VueButton';
+  import VueMobileMenu       from '../../shared/components/VueMobileMenu/VueMobileMenu';
+  import cloneDeep           from 'lodash/cloneDeep';
+  import merge               from 'lodash/merge';
+  import { IState }          from '../../state';
+  import { HttpService }     from '../../shared/services/HttpService';
+  import { addNotification } from '../../shared/components/VueNotificationStack/utils';
+  import VueModal            from '../../shared/components/VueModal/VueModal';
+  import VueInput            from '../../shared/components/VueInput/VueInput';
 
   export default {
     metaInfo:   {
       title: 'Chaptr',
     },
-    components: { VueMobileMenu, VueButton, VueGridItem, VueGridRow, VueGrid },
+    components: { VueInput, VueModal, VueMobileMenu, VueButton, VueGridItem, VueGridRow, VueGrid },
     computed:   {
       ...mapGetters('story', ['allStories']),
       hasStories() {
@@ -113,6 +149,41 @@
           fileReader.readAsText(files.item(0));
         });
       },
+      shareState() {
+        HttpService
+        .post('/upload', this.$store.state)
+        .then((res: any) => {
+          addNotification({
+                            title: 'Here is your code!',
+                            text:  'Enter the following code on the target device: ' + res.data.code,
+                          });
+        });
+      },
+      loadStateFromServer() {
+        HttpService
+        .get(`/share/${this.code}`)
+        .then((res: any) => {
+          const state: IState = cloneDeep(this.$store.state);
+          this.$store.replaceState(merge(state, res.data.content));
+          addNotification({
+                            title: 'Stories restored!',
+                            text:  'Your stories are now transfered',
+                          });
+          this.show = false;
+        })
+        .catch(() => {
+          addNotification({
+                            title: 'Code is not valid!',
+                            text:  'Stories can not be restored, please try again.',
+                          });
+        });
+      },
+    },
+    data() {
+      return {
+        show: false,
+        code: '',
+      };
     },
   };
 </script>
@@ -150,5 +221,9 @@
       cursor:        pointer;
       margin-bottom: $space-unit;
     }
+  }
+
+  .modal {
+    text-align: left !important;
   }
 </style>
