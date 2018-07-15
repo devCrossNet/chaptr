@@ -75,6 +75,11 @@
         icon="calendar-alt"
         :aria-label="$t('common.add.event' /* Add a new Event */)"
         @click="$router.push(`/event/edit/${story.id}`)" />
+
+      <vue-button
+        icon="pencil-alt"
+        :aria-label="$t('common.edit' /* Edit */)"
+        @click="$router.push(`/story/edit/${story.id}`)" />
     </vue-mobile-menu>
   </div>
 </template>
