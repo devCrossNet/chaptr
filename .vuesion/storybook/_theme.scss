@@ -1,0 +1,31 @@
+@import '~@/app/shared/design-system';
+
+:export {
+  base: 'light';
+  colorPrimary: $brand-primary;
+  colorSecondary: $brand-secondary;
+  // UI
+  appBg: $brand-bg-color;
+  appContentBg: $brand-bg-color-variant;
+  appBorderColor: $brand-border-color;
+  appBorderRadius: $brand-border-radius;
+
+  // Typography
+  fontBase: $font-family;
+  fontCode: 'monospace';
+
+  // Text colors
+  textColor: $brand-text-color;
+  textInverseColor: $brand-text-color-inverse;
+
+  // Toolbar default and active colors
+  barTextColor: $brand-text-color;
+  barSelectedColor: $brand-text-color;
+  barBg: $brand-bg-color-variant;
+
+  // Form colors
+  inputBg: $brand-bg-color;
+  inputBorder: $brand-border-color;
+  inputTextColor: $brand-text-color;
+  inputBorderRadius: $brand-border-radius;
+}

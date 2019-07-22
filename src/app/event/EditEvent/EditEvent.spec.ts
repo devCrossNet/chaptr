@@ -1,9 +1,9 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import Vuex                      from 'vuex';
-import { i18n }                  from '../../shared/plugins/i18n/i18n';
-import EditEvent                 from './EditEvent.vue';
-import { IEvent }                from '../IEvent';
-import { ICharacter }            from '../../character/ICharacter';
+import Vuex from 'vuex';
+import { i18n } from '@shared/plugins/i18n/i18n';
+import EditEvent from './EditEvent.vue';
+import { IEvent } from '../IEvent';
+import { ICharacter } from '../../character/ICharacter';
 
 const localVue = createLocalVue();
 
@@ -12,41 +12,46 @@ localVue.use(Vuex);
 describe('EditEvent.vue', () => {
   let storeModules: any;
   const event: IEvent = {
-    id:             'foo',
-    date:           '2001-01-01 01:01:01',
-    storyline:      1,
-    characters:     ['foo'],
-    chapter:        1,
-    storyId:        'bar',
-    notes:          '',
+    id: 'foo',
+    date: '2001-01-01 01:01:01',
+    storyline: 1,
+    characters: ['foo'],
+    chapter: 1,
+    storyId: 'bar',
+    notes: '',
     storylineOrder: 1,
-    title:          'TEST',
+    title: 'TEST',
   };
 
   beforeEach(() => {
     storeModules = {
-      event:     {
+      event: {
         namespaced: true,
-        getters:    {
-          getEventById:       jest.fn().mockReturnValueOnce((): any => {
-            return event;
-          }),
+        getters: {
+          getEventById: jest.fn().mockReturnValueOnce(
+            (): any => {
+              return event;
+            },
+          ),
           getEventsByStoryId: jest.fn().mockReturnValueOnce((): any => [event] as IEvent[]),
         },
-        actions:    {
-          addEvent:    jest.fn(),
+        actions: {
+          addEvent: jest.fn(),
           updateEvent: jest.fn(),
         },
       },
       character: {
         namespaced: true,
-        getters:    {
-          allCharacters:    jest.fn(), ntsByStoryId: jest.fn().mockReturnValueOnce((): any => [event] as IEvent[]),
-          getCharacterById: jest.fn().mockReturnValueOnce((): any => {
-            return {
-              id: 'foo',
-            };
-          }),
+        getters: {
+          allCharacters: jest.fn(),
+          ntsByStoryId: jest.fn().mockReturnValueOnce((): any => [event] as IEvent[]),
+          getCharacterById: jest.fn().mockReturnValueOnce(
+            (): any => {
+              return {
+                id: 'foo',
+              };
+            },
+          ),
         },
       },
     };
@@ -87,13 +92,14 @@ describe('EditEvent.vue', () => {
   });
 
   test('should add event', () => {
-    storeModules.event.getters.getEventById = jest.fn()
-                                                  .mockReturnValueOnce((): IEvent => {
-                                                    return {
-                                                      ...event,
-                                                      id: null,
-                                                    } as IEvent;
-                                                  });
+    storeModules.event.getters.getEventById = jest.fn().mockReturnValueOnce(
+      (): IEvent => {
+        return {
+          ...event,
+          id: null,
+        } as IEvent;
+      },
+    );
     const $router: any = { push: jest.fn() };
     const store = new Vuex.Store({ modules: storeModules });
     const wrapper = mount(EditEvent, {
@@ -116,12 +122,13 @@ describe('EditEvent.vue', () => {
   });
 
   test('should update event', () => {
-    storeModules.event.getters.getEventById = jest.fn()
-                                                  .mockReturnValueOnce((): IEvent => {
-                                                    return {
-                                                      ...event,
-                                                    } as IEvent;
-                                                  });
+    storeModules.event.getters.getEventById = jest.fn().mockReturnValueOnce(
+      (): IEvent => {
+        return {
+          ...event,
+        } as IEvent;
+      },
+    );
     const $router: any = { push: jest.fn() };
     const store = new Vuex.Store({ modules: storeModules });
     const wrapper = mount(EditEvent, {
@@ -144,17 +151,16 @@ describe('EditEvent.vue', () => {
   });
 
   test('should search for characters', () => {
-    storeModules.character.getters.allCharacters = jest.fn()
-                                                       .mockReturnValueOnce([
-                                                                              {
-                                                                                id:   'foo',
-                                                                                name: 'foo bar',
-                                                                              } as ICharacter,
-                                                                              {
-                                                                                id:   'baz',
-                                                                                name: 'baz bar',
-                                                                              } as ICharacter,
-                                                                            ]);
+    storeModules.character.getters.allCharacters = jest.fn().mockReturnValueOnce([
+      {
+        id: 'foo',
+        name: 'foo bar',
+      } as ICharacter,
+      {
+        id: 'baz',
+        name: 'baz bar',
+      } as ICharacter,
+    ]);
     const store = new Vuex.Store({ modules: storeModules });
     const wrapper = mount(EditEvent, {
       store,

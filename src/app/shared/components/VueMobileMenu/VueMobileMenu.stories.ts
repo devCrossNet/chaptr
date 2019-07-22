@@ -1,12 +1,13 @@
 import { storiesOf } from '@storybook/vue';
-import VueInfoAddon  from 'storybook-addon-vue-info';
-import VueMobileMenu           from './VueMobileMenu.vue';
+import { withInfo } from 'storybook-addon-vue-info';
+import VueMobileMenu from './VueMobileMenu.vue';
 
-const story = (storiesOf('VueMobileMenu', module) as any);
+const story = storiesOf('Molecules|MobileMenu', module) as any;
 
-story.addDecorator(VueInfoAddon);
-
-story.add('Default', () => ({
-  components: { VueMobileMenu },
-  template:   `<vueMobileMenu>VueMobileMenu</vueMobileMenu>`,
-}));
+story.add(
+  'Default',
+  withInfo({})(() => ({
+    components: { VueMobileMenu },
+    template: `<vueMobileMenu>VueMobileMenu</vueMobileMenu>`,
+  })),
+);

@@ -1,0 +1,36 @@
+$badge-padding: $space-4 $space-8;
+$badge-margin: 0;
+$badge-font-size: $font-size-small;
+$badge-line-height: inherit;
+$badge-letter-spacing: inherit;
+$badge-border-radius: $brand-border-radius;
+$badge-font-weight: $font-weight-regular;
+
+$badge-outlined-border-width: 1px;
+
+$badge-variations: (
+  'default': (
+    'bg': $brand-default,
+    'color': foreground-color($brand-default),
+  ),
+  'primary': (
+    'bg': $brand-primary,
+    'color': foreground-color($brand-primary),
+  ),
+  'secondary': (
+    'bg': $brand-secondary,
+    'color': foreground-color($brand-secondary),
+  ),
+  'success': (
+    'bg': $brand-success,
+    'color': foreground-color($brand-success),
+  ),
+  'warning': (
+    'bg': $brand-warning,
+    'color': foreground-color($brand-warning),
+  ),
+  'danger': (
+    'bg': $brand-danger,
+    'color': foreground-color($brand-danger),
+  ),
+);

@@ -1,0 +1,32 @@
+@import 'variables';
+@import 'mixins';
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: $font-family;
+  font-size: 1.6em;
+  font-weight: $font-weight-light;
+  letter-spacing: $letter-spacing;
+  line-height: $line-height;
+  font-display: swap;
+}
+
+small {
+  font-size: $font-size-small;
+}
+
+strong {
+  font-weight: $font-weight-bold;
+}
+
+a {
+  color: $brand-link-color;
+  font-weight: $link-font-weight;
+
+  &:hover {
+    color: $brand-link-hover-color;
+  }
+}

@@ -1,5 +1,5 @@
 import { ICharacterState } from './state';
-import { ICharacter }      from './ICharacter';
+import { ICharacter } from './ICharacter';
 
 export interface ICharacterMutations {
   ADD_CHARACTER(state: ICharacterState, character: ICharacter): void;
@@ -8,7 +8,7 @@ export interface ICharacterMutations {
 }
 
 export const CharacterMutations: ICharacterMutations = {
-  ADD_CHARACTER:    (state: ICharacterState, character: ICharacter) => {
+  ADD_CHARACTER: (state: ICharacterState, character: ICharacter) => {
     state.characters.push(character);
   },
   UPDATE_CHARACTER: (state: ICharacterState, character: ICharacter) => {

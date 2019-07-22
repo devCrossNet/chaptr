@@ -5,7 +5,7 @@ export interface IStoryState {
   currentStory: string;
 }
 
-export const StoryDefaultState: IStoryState = {
-  stories:      [],
+export const StoryDefaultState = (): IStoryState => ({
+  stories: [],
   currentStory: null,
-};
+});

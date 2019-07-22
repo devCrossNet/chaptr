@@ -1,40 +1,27 @@
 import { storiesOf } from '@storybook/vue';
-import VueInfoAddon from 'storybook-addon-vue-info';
+import { withInfo } from 'storybook-addon-vue-info';
 import VueLoader from './VueLoader.vue';
+import { brandVariations } from '@components/utils';
 
-const story = (storiesOf('VueLoader', module) as any);
+const story = storiesOf('Atoms|Loader', module) as any;
 
-story.addDecorator(VueInfoAddon);
-
-const storySchema = [
-  {
-    label: 'Default',
-  },
-  {
-    label: 'Medium',
-    props: ['primary', 'medium'],
-  },
-  {
-    label: 'Large',
-    props: ['primary', 'large'],
-  },
-  {
-    label: 'Primary',
-    props: ['primary'],
-  },
-  {
-    label: 'Accent',
-    props: ['accent'],
-  },
-  {
-    label: 'Warn',
-    props: ['warn'],
-  },
-];
-
-for (const item of storySchema) {
-  story.add(item.label, () => ({
+story.add(
+  'Loader Variants',
+  withInfo({})(() => ({
     components: { VueLoader },
-    template: `<vue-loader ${item.props ? item.props.join(' ') : ''}>${item.label}</vue-loader>`,
-  }));
-}
+    data(): any {
+      return {
+        variations: brandVariations,
+      };
+    },
+    template: `<div>
+<template v-for="variation in variations">
+<vue-loader :color="variation" />
+<vue-loader :color="variation" medium />
+<vue-loader :color="variation" large />
+<br />
+<br />
+</template>
+</div>`,
+  })),
+);

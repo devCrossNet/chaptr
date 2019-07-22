@@ -4,6 +4,6 @@ export interface IEventState {
   events: IEvent[];
 }
 
-export const EventDefaultState: IEventState = {
+export const EventDefaultState = (): IEventState => ({
   events: [],
-};
+});

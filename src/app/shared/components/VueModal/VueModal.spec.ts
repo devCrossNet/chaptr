@@ -1,12 +1,11 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import VueModal                  from './VueModal.vue';
+import { createLocalVue, mount } from '@vue/test-utils';
+import VueModal from './VueModal.vue';
 
 const localVue = createLocalVue();
 
 describe('VueModal.vue', () => {
-
   test('renders slot', (done) => {
-    const wrapper = mount(VueModal, {
+    const wrapper = mount<any>(VueModal, {
       localVue,
       slots: {
         default: '<p>TEST</p>',
@@ -29,20 +28,20 @@ describe('VueModal.vue', () => {
     wrapper.vm.leave(wrapper.vm.$el, done);
   });
 
-  test('registers and unregisters scroll/click event', () => {
+  test('registers and unregisters scroll/click/keydown event', () => {
     document.addEventListener = jest.fn();
     document.removeEventListener = jest.fn();
 
-    const wrapper = mount(VueModal, { localVue });
+    const wrapper = mount<any>(VueModal, { localVue });
 
     wrapper.destroy();
 
-    expect(document.addEventListener).toHaveBeenCalledTimes(2);
-    expect(document.removeEventListener).toHaveBeenCalledTimes(2);
+    expect(document.addEventListener).toHaveBeenCalledTimes(3);
+    expect(document.removeEventListener).toHaveBeenCalledTimes(3);
   });
 
-  test('should open menu and close it on outside click', () => {
-    const wrapper: any = mount(VueModal, {
+  test('should close on outside click', () => {
+    const wrapper = mount<any>(VueModal, {
       localVue,
       slots: {
         default: '<p>TEST</p>',
@@ -60,6 +59,20 @@ describe('VueModal.vue', () => {
 
     wrapper.setProps({ show: true });
     wrapper.vm.handleDocumentClick({ target: null });
+    expect(wrapper.vm.$emit).toHaveBeenCalledTimes(1);
+  });
+
+  test('should close on ESC press', () => {
+    const wrapper = mount<any>(VueModal, {
+      localVue,
+    });
+
+    wrapper.vm.$emit = jest.fn();
+
+    wrapper.vm.handleDocumentKeyDown({ key: 'Enter' });
+    expect(wrapper.vm.$emit).toHaveBeenCalledTimes(0);
+
+    wrapper.vm.handleDocumentKeyDown({ key: 'Escape' });
     expect(wrapper.vm.$emit).toHaveBeenCalledTimes(1);
   });
 });

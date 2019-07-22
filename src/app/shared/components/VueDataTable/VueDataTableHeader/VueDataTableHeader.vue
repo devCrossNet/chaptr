@@ -1,96 +1,104 @@
 <template>
-  <div :class="$style.vueDataTableHeader">
-    <div v-for="(column, idx) in columns" v-if="column.visible"
-         :key="idx"
-         :class="$style.column"
-         :style="{flexBasis: `${columnWidth}`}"
-         @click="onClick(column)">
+  <thead :class="$style.vueDataTableHeader">
+    <tr>
+      <th v-for="(column, idx) in visibleColumns" :key="idx" :class="$style.column" @click="onClick(column)">
+        {{ column.title }}
 
-      {{ column.title }}
-
-      <i v-if="!sortKey && !isActive(column.sortKey)"
-         class="fas fa-sort" />
-      <i v-if="isActive(column.sortKey)"
-         :class="sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'" />
-    </div>
-  </div>
+        <div :class="$style.icons" v-if="column.sortable">
+          <vue-icon-sort v-if="!sortKey && !isActive(column.sortKey)" />
+          <vue-icon-sort-up v-if="isActive(column.sortKey) && sortDirection === 'asc'" />
+          <vue-icon-sort-down v-if="isActive(column.sortKey) && sortDirection === 'desc'" />
+        </div>
+      </th>
+    </tr>
+  </thead>
 </template>
 
 <script lang="ts">
-  import { IDataTableHeaderItem } from '../IDataTable';
+import { IDataTableHeaderItem } from '../IDataTable';
+import VueIconSort from '../../icons/VueIconSort/VueIconSort.vue';
+import VueIconSortUp from '../../icons/VueIconSortUp/VueIconSortUp.vue';
+import VueIconSortDown from '../../icons/VueIconSortDown/VueIconSortDown.vue';
 
-  export default {
-    name:    'VueDataTableHeader',
-    props:   {
-      columns:       {
-        type:     Array,
-        required: true,
-      },
-      columnWidth:   {
-        type:     String,
-        required: true,
-      },
-      sortKey:       {
-        type:    String,
-      },
-      sortDirection: {
-        type:     String,
-        required: true,
-      },
+export default {
+  name: 'VueDataTableHeader',
+  components: { VueIconSortDown, VueIconSortUp, VueIconSort },
+  props: {
+    columns: {
+      type: Array,
+      required: true,
     },
-    methods: {
-      onClick(column: IDataTableHeaderItem) {
+    sortKey: {
+      type: String,
+    },
+    sortDirection: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    visibleColumns() {
+      return this.columns.filter((column: IDataTableHeaderItem) => column.visible);
+    },
+  },
+  methods: {
+    onClick(column: IDataTableHeaderItem) {
+      if (column.sortable) {
         this.$emit('click', column);
-      },
-      isActive(sortKey: string) {
-        return sortKey === this.sortKey;
-      },
+      }
     },
-  };
+    isActive(sortKey: string) {
+      return sortKey === this.sortKey;
+    },
+  },
+};
 </script>
 
 <style lang="scss" module>
-  @import "../../../styles";
+@import '../../../design-system';
 
-  .vueDataTableHeader {
-    display:        flex;
-    flex-direction: row;
-    box-shadow:     $panel-shadow;
-    border:         1px solid $divider-color;
-    background:     $bg-color;
-    font-weight:    700;
-    background:     $panel-bg;
-    min-width:      600px;
+.vueDataTableHeader {
+  border: $data-table-header-border;
+  background: $data-table-header-bg;
+
+  min-width: $data-table-min-width;
+
+  th {
+    font-weight: $data-table-header-font-weight;
   }
 
-  .column {
-    flex:         1 1 auto;
-    border-right: 1px solid $divider-color;
-    padding:      $space-unit $space-unit * 2;
-    cursor:       pointer;
+  tr {
+    width: $data-table-width;
+    min-width: $data-table-min-width;
+  }
+}
 
-    &:hover {
-      i {
-        color:   $brand-accent;
-        opacity: 1;
-      }
-    }
+.column {
+  border-right: $data-table-header-border;
+  padding: $data-table-header-column-padding;
+  cursor: pointer;
+  user-select: none;
 
-    &:last-child {
-      border-right: none;
-    }
-
+  &:hover {
     i {
-      float:      right;
-      margin-top: $space-unit * 0.5;
-      opacity:    .3;
-    }
-
-    :global {
-      .fa-sort-up, .fa-sort-down {
-        color:   $brand-accent;
-        opacity: 1;
-      }
+      color: $data-table-header-icon-hover-color;
+      opacity: 1;
     }
   }
+
+  &:last-child {
+    border-right: none;
+  }
+
+  i {
+    margin: $data-table-header-icon-margin;
+    color: $data-table-header-icon-color;
+  }
+}
+
+.icons {
+  display: inline-block;
+  width: $space-12;
+  float: right;
+}
 </style>

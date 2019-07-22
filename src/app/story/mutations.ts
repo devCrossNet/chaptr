@@ -1,5 +1,5 @@
 import { IStoryState } from './state';
-import { IStory }      from './IStory';
+import { IStory } from './IStory';
 
 export interface IStoryMutations {
   ADD_STORY(state: IStoryState, story: IStory): void;
@@ -10,10 +10,10 @@ export interface IStoryMutations {
 }
 
 export const StoryMutations: IStoryMutations = {
-  ADD_STORY:         (state: IStoryState, story: IStory) => {
+  ADD_STORY: (state: IStoryState, story: IStory) => {
     state.stories.push(story);
   },
-  UPDATE_STORY:      (state: IStoryState, story: IStory) => {
+  UPDATE_STORY: (state: IStoryState, story: IStory) => {
     const index: number = state.stories.findIndex((s: IStory) => s.id === story.id);
 
     state.stories[index] = story;

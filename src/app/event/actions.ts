@@ -1,6 +1,6 @@
 import { ActionContext } from 'vuex';
-import { IEventState }   from './state';
-import { IEvent }        from './IEvent';
+import { IEventState } from './state';
+import { IEvent } from './IEvent';
 
 export interface IEventActions {
   addEvent(context: ActionContext<IEventState, IEventState>, event: IEvent): void;

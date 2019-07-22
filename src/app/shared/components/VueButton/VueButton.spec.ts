@@ -1,105 +1,173 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import VueButton                 from './VueButton.vue';
+import { createLocalVue, mount } from '@vue/test-utils';
+import VueButton from './VueButton.vue';
+import { brandVariations } from '@components/utils';
 
 const localVue = createLocalVue();
 
 describe('VueButton.vue', () => {
+  describe('Button', () => {
+    test('renders component', () => {
+      const wrapper = mount<any>(VueButton, { localVue });
 
-  test('renders component', () => {
-    const wrapper = mount(VueButton, { localVue });
-
-    expect(wrapper.findAll(`.button`)).toHaveLength(1);
-    expect(wrapper.findAll(`.active`)).toHaveLength(0);
-  });
-
-  test('should emit onClick event', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
+      expect(wrapper.findAll(`.button`)).toHaveLength(1);
+      expect(wrapper.findAll(`.active`)).toHaveLength(0);
     });
 
-    wrapper.find('button').trigger('click');
-    expect(wrapper.emitted().click).toBeTruthy();
-  });
+    test('should emit onClick event', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+      });
 
-  test('should disable button and not emit onClick event', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        disabled: true,
-      },
+      wrapper.find('button').trigger('click');
+      expect(wrapper.emitted().click).toBeTruthy();
     });
 
-    expect(wrapper.findAll(`.disabled`)).toHaveLength(1);
+    test('should disable button and not emit onClick event', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          disabled: true,
+        },
+      });
 
-    wrapper.find('button').trigger('click');
-    expect(wrapper.emitted().click).toBeFalsy();
-  });
+      expect(wrapper.findAll(`.disabled`)).toHaveLength(1);
 
-  test('should show loader and not emit onClick event', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        loading: true,
-      },
+      wrapper.find('button').trigger('click');
+      expect(wrapper.emitted().click).toBeFalsy();
     });
 
-    wrapper.find('button').trigger('click');
-    expect(wrapper.emitted().click).toBeFalsy();
-  });
+    test('should show loader and not emit onClick event', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          loading: true,
+        },
+      });
 
-  test('should show primary color', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        primary: true,
-      },
+      wrapper.find('button').trigger('click');
+      expect(wrapper.emitted().click).toBeFalsy();
     });
 
-    expect(wrapper.findAll(`.primary`)).toHaveLength(1);
-  });
+    test('should render color variations', () => {
+      brandVariations.forEach((variation: string) => {
+        const wrapper = mount<any>(VueButton, {
+          localVue,
+          propsData: {
+            color: variation,
+          },
+        });
+        const actual = wrapper.findAll(`.${variation}`);
+        const expected = 1;
 
-  test('should show accent color', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        accent: true,
-      },
+        expect(actual).toHaveLength(expected);
+      });
     });
 
-    expect(wrapper.findAll(`.accent`)).toHaveLength(1);
-  });
+    test('should render outlined color', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          outlined: true,
+        },
+      });
 
-  test('should show warn color', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        warn: true,
-      },
+      expect(wrapper.findAll(`.outlined`)).toHaveLength(1);
     });
 
-    expect(wrapper.findAll(`.warn`)).toHaveLength(1);
-  });
+    test('should render ghost color', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          ghost: true,
+        },
+      });
 
-  test('should add pulse animation', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        pulse: true,
-      },
+      expect(wrapper.findAll(`.ghost`)).toHaveLength(1);
     });
 
-    expect(wrapper.findAll(`.pulse`)).toHaveLength(1);
+    test('should apply fixed width when loading', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+      });
+
+      (wrapper as any).vm.$refs.button.getBoundingClientRect = () => {
+        return {
+          width: 134,
+        };
+      };
+
+      expect(wrapper.vm.actualWidth).toBeNull();
+      wrapper.setProps({ loading: true });
+      expect(wrapper.vm.actualWidth).toBe('134px');
+    });
   });
 
-  test('should add icon', () => {
-    const wrapper = mount(VueButton, {
-      localVue,
-      propsData: {
-        icon: 'user',
-      },
+  describe('Link', () => {
+    test('renders router-link', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          as: 'router-link',
+          to: '/foo',
+        },
+        stubs: ['router-link'],
+      });
+      const actual = wrapper.html();
+      const expected =
+        '<router-link-stub event="click" tabindex="0" class="button ripple default" to="/foo"> <!----></router-link-stub>';
+
+      expect(actual).toBe(expected);
     });
 
-    expect(wrapper.findAll(`.fa-user`)).toHaveLength(1);
-  });
+    test('renders disabled router-link', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          as: 'router-link',
+          to: '/foo',
+          disabled: true,
+        },
+        stubs: ['router-link'],
+      });
+      const actual = wrapper.html();
+      const expected =
+        '<router-link-stub disabled="true" tabindex="-1" aria-hidden="true" class="button ripple default disabled" to="/foo"> <!----></router-link-stub>';
 
+      expect(actual).toBe(expected);
+    });
+
+    test('renders a', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          as: 'a',
+          href: '/foo',
+        },
+      });
+      const actual = wrapper.html();
+      const expected = '<a tabindex="0" class="button ripple default" href="/foo"> <!----></a>';
+
+      expect(actual).toBe(expected);
+    });
+
+    test('should prevent and stop click event if disabled', () => {
+      const wrapper = mount<any>(VueButton, {
+        localVue,
+        propsData: {
+          as: 'a',
+          href: '/foo',
+          disabled: true,
+        },
+      });
+      const e = {
+        preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
+      };
+
+      wrapper.vm.click(e);
+
+      expect(e.preventDefault).toHaveBeenCalled();
+      expect(e.stopPropagation).toHaveBeenCalled();
+    });
+  });
 });

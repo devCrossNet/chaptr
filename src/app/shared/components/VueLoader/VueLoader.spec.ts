@@ -1,83 +1,51 @@
-import { mount, createLocalVue } from '@vue/test-utils';
-import VueLoader                 from './VueLoader.vue';
+import { createLocalVue, mount } from '@vue/test-utils';
+import VueLoader from './VueLoader.vue';
+import { brandVariations } from '@components/utils';
 
 const localVue = createLocalVue();
 
 describe('VueLoader.vue', () => {
-
   test('renders default loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
-        localVue,
-      });
+    const wrapper = mount(VueLoader, {
+      localVue,
+    });
 
     expect(wrapper.findAll(`.loader`)).toHaveLength(1);
   });
 
   test('renders medium loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
-        localVue,
-        propsData: {
-          medium: true,
-        },
-      });
+    const wrapper = mount(VueLoader, {
+      localVue,
+      propsData: {
+        medium: true,
+      },
+    });
 
     expect(wrapper.findAll(`.medium`)).toHaveLength(1);
   });
 
   test('renders large loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
-        localVue,
-        propsData: {
-          large: true,
-        },
-      });
+    const wrapper = mount(VueLoader, {
+      localVue,
+      propsData: {
+        large: true,
+      },
+    });
 
     expect(wrapper.findAll(`.large`)).toHaveLength(1);
   });
 
-  test('renders primary loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
+  test('renders color variations', () => {
+    brandVariations.forEach((variation: string) => {
+      const wrapper = mount(VueLoader, {
         localVue,
         propsData: {
-          primary: true,
+          color: variation,
         },
       });
-
-    expect(wrapper.findAll(`.primary`)).toHaveLength(1);
+      const actual = wrapper.findAll(`.${variation}`);
+      const expected = 1;
+      expect(actual).toHaveLength(expected);
+    });
   });
-
-  test('renders accent loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
-        localVue,
-        propsData: {
-          accent: true,
-        },
-      });
-
-    expect(wrapper.findAll(`.accent`)).toHaveLength(1);
-  });
-
-  test('renders warn loader', () => {
-    const wrapper = mount(
-      VueLoader,
-      {
-        localVue,
-        propsData: {
-          warn: true,
-        },
-      });
-
-    expect(wrapper.findAll(`.warn`)).toHaveLength(1);
-  });
-
 });

@@ -1,19 +1,18 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import VueTextarea                  from './VueTextarea.vue';
+import VueTextArea from './VueTextArea.vue';
 
 const localVue = createLocalVue();
 
-describe('VueTextarea.vue', () => {
-
+describe('VueTextArea.vue', () => {
   test('renders component', () => {
-    const wrapper = mount(VueTextarea, {
+    const wrapper = mount<any>(VueTextArea, {
       localVue,
       propsData: {
         message: 'MESSAGE!',
-        name:    'name',
-        id:      'id',
+        name: 'name',
+        id: 'id',
       },
-      mocks:     {
+      mocks: {
         errors: null,
       },
     });
@@ -23,24 +22,24 @@ describe('VueTextarea.vue', () => {
   });
 
   test('renders disabled component', () => {
-    const wrapper = mount(VueTextarea, {
+    const wrapper = mount<any>(VueTextArea, {
       localVue,
       propsData: {
         disabled: true,
-        name:     'name',
-        id:       'id',
+        name: 'name',
+        id: 'id',
       },
     });
 
     expect(wrapper.findAll(`.disabled`)).toHaveLength(1);
   });
 
-  test('should emit input', () => {
-    const wrapper = mount(VueTextarea, {
+  test('should emit textarea', () => {
+    const wrapper = mount<any>(VueTextArea, {
       localVue,
       propsData: {
         name: 'name',
-        id:   'id',
+        id: 'id',
       },
     }) as any;
 
@@ -49,9 +48,9 @@ describe('VueTextarea.vue', () => {
   });
 
   test('should display error state', () => {
-    const wrapper = mount(VueTextarea, {
+    const wrapper = mount<any>(VueTextArea, {
       localVue,
-      mocks:     {
+      mocks: {
         errors: {
           first() {
             return true;
@@ -60,8 +59,8 @@ describe('VueTextarea.vue', () => {
       },
       propsData: {
         errorMessage: 'ERROR!',
-        name:    'name',
-        id:      'id',
+        name: 'name',
+        id: 'id',
       },
     });
 
@@ -69,4 +68,51 @@ describe('VueTextarea.vue', () => {
     expect(wrapper.find(`.message`).text()).toBe('ERROR!');
   });
 
+  test('autofocus fallback', () => {
+    const wrapper = mount<any>(VueTextArea, {
+      localVue,
+      propsData: {
+        name: 'name',
+        id: 'id',
+        autofocus: true,
+      },
+    });
+
+    expect(wrapper.vm.observer).toBeNull();
+  });
+
+  test('autofocus in modern browsers', () => {
+    (window as any).IntersectionObserver = class IntersectionObserver {
+      public cb: any;
+      public options: any;
+
+      constructor(cb: any, options: any) {
+        this.cb = cb;
+        this.options = options;
+      }
+
+      public observe() {
+        this.cb();
+      }
+    };
+    const wrapper = mount<any>(VueTextArea, {
+      localVue,
+      propsData: {
+        name: 'name',
+        id: 'id',
+        autofocus: false,
+      },
+    });
+
+    wrapper.vm.$refs.input.focus = jest.fn();
+
+    expect(wrapper.vm.observer).not.toBeNull();
+    expect(wrapper.vm.$refs.input.focus).not.toHaveBeenCalled();
+
+    wrapper.setProps({ autofocus: true });
+    wrapper.vm.observer.observe();
+    expect(wrapper.vm.$refs.input.focus).toHaveBeenCalled();
+
+    wrapper.destroy();
+  });
 });

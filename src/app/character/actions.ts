@@ -1,6 +1,6 @@
-import { ActionContext }   from 'vuex';
+import { ActionContext } from 'vuex';
 import { ICharacterState } from './state';
-import { ICharacter }      from './ICharacter';
+import { ICharacter } from './ICharacter';
 
 export interface ICharacterActions {
   addCharacter(context: ActionContext<ICharacterState, ICharacterState>, character: ICharacter): void;

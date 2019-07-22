@@ -3,22 +3,23 @@
     <vue-grid>
       <vue-grid-row>
         <vue-grid-item>
-          <small>&copy; Copyright {{year}} Johannes Werner</small>
+          <small>&copy; Copyright {{ year }} Johannes Werner</small>
         </vue-grid-item>
 
         <vue-grid-item>
           <a href="https://github.com/devCrossNet" target="_blank" rel="noopener" aria-label="github profile">
-            <i class="fab fa-github-alt" />
+            <vue-icon-github-alt />
           </a>
-          <a href="https://twitter.com/_jwerner_" target="_blank" rel="noopener" aria-label="twitter profile">
-            <i class="fab fa-twitter-square" />
+          <a href="https://twitter.com/vuesion1" target="_blank" rel="noopener" aria-label="twitter profile">
+            <vue-icon-twitter-square />
           </a>
         </vue-grid-item>
 
         <vue-grid-item>
-          <small><a href="https://github.com/devCrossNet/chaptr/blob/master/LICENSE" target="_blank"
-                    rel="noopener">MIT
-                                   License</a>
+          <small>
+            <a href="https://github.com/vuesion/vuesion/blob/master/LICENSE" target="_blank" rel="noopener">
+              MIT License
+            </a>
           </small>
         </vue-grid-item>
       </vue-grid-row>
@@ -27,42 +28,61 @@
 </template>
 
 <script lang="ts">
-  import VueGrid     from '../VueGrid/VueGrid';
-  import VueGridItem from '../VueGridItem/VueGridItem';
-  import VueGridRow  from '../VueGridRow/VueGridRow';
+import VueGrid from '../VueGrid/VueGrid.vue';
+import VueGridItem from '../VueGridItem/VueGridItem.vue';
+import VueGridRow from '../VueGridRow/VueGridRow.vue';
+import VueIconGithubAlt from '../icons/VueIconGithubAlt/VueIconGithubAlt.vue';
+import VueIconTwitterSquare from '../icons/VueIconTwitterSquare/VueIconTwitterSquare.vue';
 
-  export default {
-    name:       'VueFooter',
-    components: {
-      VueGrid,
-      VueGridItem,
-      VueGridRow,
+export default {
+  name: 'VueFooter',
+  components: {
+    VueIconTwitterSquare,
+    VueIconGithubAlt,
+    VueGrid,
+    VueGridItem,
+    VueGridRow,
+  },
+  computed: {
+    year() {
+      return new Date().getFullYear();
     },
-    computed:   {
-      year() {
-        return new Date().getFullYear();
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style lang="scss" module>
-  @import "../../styles";
+@import '~@/app/shared/design-system';
 
-  .vueFooter {
-    padding:    $footer-padding;
-    background: $footer-bg;
-    color:      $footer-color;
-    text-align: center;
+.vueFooter {
+  padding: $footer-padding;
+  background: $footer-bg;
+  color: $footer-color;
+  text-align: center;
 
-    i {
-      font-size: $font-size-h1;
-      margin:    0 $space-unit * 2;
-    }
+  i {
+    height: $font-size-h1;
+    width: $font-size-h1;
+    fill: $footer-link-color;
+    margin: 0 $space-12;
 
-    small {
-      display: inline-block;
-      margin:  $space-unit * 2 0;
+    &:hover {
+      fill: $footer-link-hover-color;
     }
   }
+
+  small {
+    display: inline-block;
+    margin: $space-12 0;
+  }
+
+  a {
+    color: $footer-link-color;
+    font-weight: $footer-link-font-weight;
+
+    &:hover {
+      color: $footer-link-hover-color;
+    }
+  }
+}
 </style>

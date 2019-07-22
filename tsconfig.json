@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2015",
-      "es2016",
-      "dom"
-    ],
+    "lib": ["es2015", "es2016", "dom"],
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es5",
@@ -12,14 +8,17 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@components/*": ["src/app/shared/components/*"],
+      "@static/*": ["src/static/*"]
+    },
+    "rootDirs": ["src"]
   },
-  "include": [
-    "./config/*",
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./node_modules",
-    "./dist"
-  ]
+  "include": ["./src/**/*", "./src/**/*.vue"],
+  "exclude": ["./node_modules", "./dist"]
 }

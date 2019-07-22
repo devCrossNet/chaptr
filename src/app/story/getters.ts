@@ -1,5 +1,5 @@
 import { IStoryState } from './state';
-import { IStory }      from './IStory';
+import { IStory } from './IStory';
 
 export interface IStoryGetters {
   allStories(state: IStoryState): IStory[];

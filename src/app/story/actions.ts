@@ -1,6 +1,6 @@
 import { ActionContext } from 'vuex';
-import { IStoryState }   from './state';
-import { IStory }        from './IStory';
+import { IStoryState } from './state';
+import { IStory } from './IStory';
 
 export interface IStoryActions {
   addStory(context: ActionContext<IStoryState, IStoryState>, story: IStory): void;

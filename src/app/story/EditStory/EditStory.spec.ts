@@ -1,8 +1,8 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import Vuex                      from 'vuex';
-import { i18n }                  from '../../shared/plugins/i18n/i18n';
-import EditStory                 from './EditStory.vue';
-import { IStory }                from '../IStory';
+import Vuex from 'vuex';
+import { i18n } from '@shared/plugins/i18n/i18n';
+import EditStory from './EditStory.vue';
+import { IStory } from '../IStory';
 
 const localVue = createLocalVue();
 
@@ -11,23 +11,25 @@ localVue.use(Vuex);
 describe('EditStory.vue', () => {
   let storeModules: any;
   const story: IStory = {
-    id:       'foo',
+    id: 'foo',
     abstract: 'test',
-    color:    'red',
-    title:    'TEST',
+    color: 'red',
+    title: 'TEST',
   };
 
   beforeEach(() => {
     storeModules = {
       story: {
         namespaced: true,
-        getters:    {
-          getStoryById: jest.fn().mockReturnValueOnce((): any => {
-            return story;
-          }),
+        getters: {
+          getStoryById: jest.fn().mockReturnValueOnce(
+            (): any => {
+              return story;
+            },
+          ),
         },
-        actions:    {
-          addStory:    jest.fn(),
+        actions: {
+          addStory: jest.fn(),
           updateStory: jest.fn(),
         },
       },
@@ -67,13 +69,14 @@ describe('EditStory.vue', () => {
   });
 
   test('should add story', () => {
-    storeModules.story.getters.getStoryById = jest.fn()
-                                                  .mockReturnValueOnce((): IStory => {
-                                                    return {
-                                                      ...story,
-                                                      id: null,
-                                                    } as IStory;
-                                                  });
+    storeModules.story.getters.getStoryById = jest.fn().mockReturnValueOnce(
+      (): IStory => {
+        return {
+          ...story,
+          id: null,
+        } as IStory;
+      },
+    );
     const $router: any = { push: jest.fn() };
     const store = new Vuex.Store({ modules: storeModules });
     const wrapper = mount(EditStory, {
@@ -96,10 +99,11 @@ describe('EditStory.vue', () => {
   });
 
   test('should update story', () => {
-    storeModules.story.getters.getStoryById = jest.fn()
-                                                  .mockReturnValueOnce((): IStory => {
-                                                    return story;
-                                                  });
+    storeModules.story.getters.getStoryById = jest.fn().mockReturnValueOnce(
+      (): IStory => {
+        return story;
+      },
+    );
     const $router: any = { push: jest.fn() };
     const store = new Vuex.Store({ modules: storeModules });
     const wrapper = mount(EditStory, {

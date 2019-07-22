@@ -1,229 +1,212 @@
 <template>
-  <div :class="[$style.home, hasStories ? $style.hasStories : '']">
-    <vue-grid>
-      <vue-grid-row :class="$style.header">
-        <vue-grid-item>
-          <h1>Chaptr</h1>
-          <p>write books the easy way.</p>
-        </vue-grid-item>
-      </vue-grid-row>
+  <div :class="$style.home">
+    <input type="file" ref="fileupload" :style="{ display: 'none' }" />
 
-      <vue-grid-row v-show="hasStories === true">
-        <vue-grid-item>
-          <h3>{{ $t('common.yourStories' /* Your Stories */) }}</h3>
+    <vue-layout @position="changeMenuPosition" :position="menuPosition">
+      <vue-grid>
+        <vue-grid-row v-show="hasStories === true">
+          <vue-grid-item fill>
+            <vue-headline level="1">{{ $t('common.yourStories' /* Your Stories */) }}</vue-headline>
+          </vue-grid-item>
 
-          <ul :class="$style.storyList">
-            <li v-for="story in allStories"
-                :key="story.id"
-                :style="{backgroundColor: story.color}"
-                role="button"
-                @click="$router.push(`/story/${story.id}`)">
-              <strong>{{ story.title }}</strong>
-            </li>
-          </ul>
-        </vue-grid-item>
-      </vue-grid-row>
-    </vue-grid>
+          <vue-grid-item v-for="story in allStories" :key="story.id" :class="$style.card">
+            <vue-card>
+              <vue-card-header :title="story.title" :color="story.color"></vue-card-header>
+              <vue-card-body>{{ story.abstract }}</vue-card-body>
+              <vue-card-footer>
+                <vue-button color="secondary" as="router-link" :target="`/story/${story.id}`">
+                  <vue-icon-pencil /> &nbsp; {{ $t('common.edit' /* Edit */) }}
+                </vue-button>
+              </vue-card-footer>
+            </vue-card>
+          </vue-grid-item>
+        </vue-grid-row>
+      </vue-grid>
 
-    <vue-mobile-menu>
-      <vue-button
-        accent
-        @click="addStory"
-        icon="plus"
-        :aria-label="$t('common.add.story' /* Add a new Story */)" />
+      <vue-mobile-menu slot="sidebar">
+        <vue-button @click="addStory" :aria-label="$t('common.add.story' /* Add a new Story */)">
+          <vue-icon-add />
+        </vue-button>
+        <vue-button @click="saveState" :aria-label="$t('common.save.State' /* Save current State */)">
+          <vue-icon-save />
+        </vue-button>
+        <vue-button @click="loadState" :aria-label="$t('common.load.State' /* Load current State */)">
+          <vue-icon-upload />
+        </vue-button>
+        <vue-button @click="shareState" :aria-label="$t('common.share.State' /* Share current State */)">
+          <vue-icon-share />
+        </vue-button>
+        <vue-button @click="show = true" :aria-label="$t('common.share.EnterCode' /* Enter Code */)">
+          <vue-icon-keyboard />
+        </vue-button>
+      </vue-mobile-menu>
+    </vue-layout>
 
+    <vue-modal :show="show">
+      <vue-headline level="3">{{ $t('common.share.EnterCode' /* Enter Code */) }}</vue-headline>
+      <vue-input name="code" id="code" placeholder="code" v-model="code" autofocus />
       <vue-button
-        primary
-        @click="saveState"
-        icon="download"
-        :aria-label="$t('common.save.State' /* Save current State */)" />
-
-      <input type="file" ref="fileupload" :style="{display:'none'}" />
-      <vue-button
-        warn
-        @click="loadState"
-        icon="upload"
-        :aria-label="$t('common.load.State' /* Load current State */)" />
-      <vue-button
-        @click="shareState"
-        icon="share"
-        :aria-label="$t('common.share.State' /* Share current State */)" />
-      <vue-button
-        @click="show = true"
-        icon="keyboard"
-        :aria-label="$t('common.share.State' /* Share current State */)" />
-    </vue-mobile-menu>
-
-    <vue-modal :show="show" :class="$style.modal">
-      <vue-input
-        name="code"
-        id="code"
-        placeholder="code"
-        v-model="code"
-        autofocus
-      />
-      <vue-button
-        accent
-        aria-label="Restore Stories"
+        color="primary"
+        :aria-label="$t('common.restore' /* Restore Stories */)"
         @click="loadStateFromServer()"
         :disabled="code.length > 6"
       >
-        Restore
+        {{ $t('common.restore' /* Restore Stories */) }}
       </vue-button>
-      <vue-button
-        aria-label="Cancel"
-        @click="show = false"
-      >
-        Cancel
+      <vue-button ghost :aria-label="$t('common.cancel' /* Cancel */)" @click="show = false">
+        {{ $t('common.cancel' /* Cancel */) }}
       </vue-button>
     </vue-modal>
   </div>
 </template>
 
 <script lang="ts">
-  import { mapGetters }      from 'vuex';
-  import VueGrid             from '../../shared/components/VueGrid/VueGrid';
-  import VueGridRow          from '../../shared/components/VueGridRow/VueGridRow';
-  import VueGridItem         from '../../shared/components/VueGridItem/VueGridItem';
-  import VueButton           from '../../shared/components/VueButton/VueButton';
-  import VueMobileMenu       from '../../shared/components/VueMobileMenu/VueMobileMenu';
-  import cloneDeep           from 'lodash/cloneDeep';
-  import merge               from 'lodash/merge';
-  import { IState }          from '../../state';
-  import { HttpService }     from '../../shared/services/HttpService';
-  import { addNotification } from '../../shared/components/VueNotificationStack/utils';
-  import VueModal            from '../../shared/components/VueModal/VueModal';
-  import VueInput            from '../../shared/components/VueInput/VueInput';
+import { mapActions, mapGetters } from 'vuex';
+import VueGrid from '../../shared/components/VueGrid/VueGrid.vue';
+import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
+import VueGridItem from '../../shared/components/VueGridItem/VueGridItem.vue';
+import VueButton from '../../shared/components/VueButton/VueButton.vue';
+import VueMobileMenu from '../../shared/components/VueMobileMenu/VueMobileMenu.vue';
+import cloneDeep from 'lodash/cloneDeep';
+import merge from 'lodash/merge';
+import { IState } from '../../state';
+import { HttpService } from '@shared/services/HttpService/HttpService';
+import { addNotification } from '@components/VueNotificationStack/utils';
+import VueModal from '../../shared/components/VueModal/VueModal.vue';
+import VueInput from '../../shared/components/VueInput/VueInput.vue';
+import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
+import VueCard from '@components/VueCard/VueCard.vue';
+import VueCardHeader from '@components/VueCard/VueCardHeader/VueCardHeader.vue';
+import VueCardBody from '@components/VueCard/VueCardBody/VueCardBody.vue';
+import VueCardFooter from '@components/VueCard/VueCardFooter/VueCardFooter.vue';
+import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
+import VueLayout from '@components/VueLayout/VueLayout.vue';
+import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
+import VueIconSave from '@components/icons/VueIconSave/VueIconSave.vue';
+import VueIconUpload from '@components/icons/VueIconUpload/VueIconUpload.vue';
+import VueIconShare from '@components/icons/VueIconShare/VueIconShare.vue';
+import VueIconKeyboard from '@components/icons/VueIconKeyboard/VueIconKeyboard.vue';
+import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 
-  export default {
-    metaInfo:   {
-      title: 'Chaptr',
+export default {
+  metaInfo: {
+    title: 'Chaptr',
+  },
+  components: {
+    VueIconPencil,
+    VueIconKeyboard,
+    VueIconShare,
+    VueIconUpload,
+    VueIconSave,
+    VueIconAdd,
+    VueLayout,
+    VueIconBook,
+    VueCardFooter,
+    VueCardBody,
+    VueCardHeader,
+    VueCard,
+    VueHeadline,
+    VueInput,
+    VueModal,
+    VueMobileMenu,
+    VueButton,
+    VueGridItem,
+    VueGridRow,
+    VueGrid,
+  },
+  computed: {
+    ...mapGetters('story', ['allStories']),
+    ...mapGetters('app', ['menuPosition']),
+    hasStories() {
+      return this.allStories.length > 0;
     },
-    components: { VueInput, VueModal, VueMobileMenu, VueButton, VueGridItem, VueGridRow, VueGrid },
-    computed:   {
-      ...mapGetters('story', ['allStories']),
-      hasStories() {
-        return this.allStories.length > 0;
-      },
+  },
+  methods: {
+    ...mapActions('app', ['changeMenuPosition']),
+    addStory() {
+      this.$router.push('/story/edit');
     },
-    methods:    {
-      addStory() {
-        this.$router.push('/story/edit');
-      },
-      saveState() {
-        const state: IState = cloneDeep(this.$store.state);
-        delete state.app;
-        delete state.route;
+    saveState() {
+      const state: IState = cloneDeep(this.$store.state);
+      delete state.app;
+      delete state.route;
 
-        const newBlob = new Blob([JSON.stringify(state)], { type: 'application/json;' });
-        const filename = `chaptr-${new Date().getTime()}.json`;
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(newBlob, filename);
-          return;
-        }
-        const data = window.URL.createObjectURL(newBlob);
-        const link = document.createElement('a');
-        link.href = data;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(() => {
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(data);
-        }, 1000);
-      },
-      loadState() {
-        this.$refs.fileupload.click();
+      const newBlob = new Blob([JSON.stringify(state)], { type: 'application/json;' });
+      const filename = `chaptr-${new Date().getTime()}.json`;
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob, filename);
+        return;
+      }
+      const data = window.URL.createObjectURL(newBlob);
+      const link = document.createElement('a');
+      link.href = data;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(data);
+      }, 1000);
+    },
+    loadState() {
+      this.$refs.fileupload.click();
 
-        this.$refs.fileupload.addEventListener('change', () => {
-          const files = this.$refs.fileupload.files;
-          const fileReader = new FileReader();
+      this.$refs.fileupload.addEventListener('change', () => {
+        const files = this.$refs.fileupload.files;
+        const fileReader = new FileReader();
 
-          fileReader.onload = (e: FileReaderProgressEvent) => {
-            const state: IState = cloneDeep(this.$store.state);
-            const loadedState = JSON.parse(e.target.result);
+        fileReader.onload = (e: any) => {
+          const state: IState = cloneDeep(this.$store.state);
+          const loadedState = JSON.parse(e.target.result);
 
-            this.$store.replaceState(merge(state, loadedState));
-          };
+          this.$store.replaceState(merge(state, loadedState));
+        };
 
-          fileReader.readAsText(files.item(0));
+        fileReader.readAsText(files.item(0));
+      });
+    },
+    shareState() {
+      HttpService.post('/upload', this.$store.state).then((res: any) => {
+        addNotification({
+          title: 'Here is your code!',
+          text: 'Enter the following code on the target device: ' + res.data.code,
         });
-      },
-      shareState() {
-        HttpService
-        .post('/upload', this.$store.state)
-        .then((res: any) => {
-          addNotification({
-                            title: 'Here is your code!',
-                            text:  'Enter the following code on the target device: ' + res.data.code,
-                          });
-        });
-      },
-      loadStateFromServer() {
-        HttpService
-        .get(`/share/${this.code}`)
+      });
+    },
+    loadStateFromServer() {
+      HttpService.get(`/share/${this.code}`)
         .then((res: any) => {
           const state: IState = cloneDeep(this.$store.state);
           this.$store.replaceState(merge(state, res.data.content));
           addNotification({
-                            title: 'Stories restored!',
-                            text:  'Your stories are now transfered',
-                          });
+            title: 'Stories restored!',
+            text: 'Your stories are now transferred',
+          });
           this.show = false;
         })
         .catch(() => {
           addNotification({
-                            title: 'Code is not valid!',
-                            text:  'Stories can not be restored, please try again.',
-                          });
+            title: 'Code is not valid!',
+            text: 'Stories can not be restored, please try again.',
+          });
         });
-      },
     },
-    data() {
-      return {
-        show: false,
-        code: '',
-      };
-    },
-  };
+  },
+  data() {
+    return {
+      show: false,
+      code: '',
+    };
+  },
+};
 </script>
 
 <style lang="scss" module>
-  @import "../../shared/styles";
+@import '../../shared/design-system';
+.home {
+}
 
-  .home {
-    background:  linear-gradient(to bottom, $brand-dark-primary 0%, lighten($brand-light-primary, 2%) 50%, $brand-primary 100%);
-    text-align:  center;
-    text-shadow: 3px 5px 10px rgba(0, 0, 0, .25);
-    color:       $text-color-inverse;
-    padding-top: $nav-bar-height;
-
-    h1 {
-      font-weight: 700;
-    }
-  }
-
-  .hasStories {
-    .header {
-      h1 {
-        font-size: $font-size-h2;
-        margin:    0;
-      }
-      p {
-        font-size: 75%;
-      }
-    }
-  }
-
-  .storyList {
-    li {
-      padding:       $space-unit * 2;
-      cursor:        pointer;
-      margin-bottom: $space-unit;
-    }
-  }
-
-  .modal {
-    text-align: left !important;
-  }
+.card {
+  flex: 0 1 50%;
+}
 </style>

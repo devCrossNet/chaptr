@@ -1,13 +1,14 @@
-import Vue                      from 'vue';
-import Vuex, { Store }          from 'vuex';
+import Vue from 'vue';
+import Vuex, { Module, Store } from 'vuex';
+import merge from 'deepmerge';
 import { DefaultState, IState } from './state';
-import { VuexPersist }          from './shared/plugins/vuex-persist/vuex-persist';
-import { PersistLocalStorage }  from './shared/plugins/vuex-persist/PersistLocalStorage';
-import { PersistCookieStorage } from './shared/plugins/vuex-persist/PersistCookieStorage';
-import { AppModule }            from './app/module';
-import { StoryModule }          from './story/module';
-import { CharacterModule }      from './character/module';
-import { EventModule }          from './event/module';
+import { VuexPersist } from '@vuesion/addon-vuex-persist';
+import { PersistCookieStorage } from '@vuesion/addon-vuex-persist/dist/PersistCookieStorage';
+import { PersistLocalStorage } from '@vuesion/addon-vuex-persist/dist/PersistLocalStorage';
+import { AppModule } from './app/module';
+import { StoryModule } from './story/module';
+import { CharacterModule } from './character/module';
+import { EventModule } from './event/module';
 
 Vue.use(Vuex);
 
@@ -27,29 +28,40 @@ const beforePersistCookieStorage = (localState: IState): IState => {
   return localState;
 };
 
-export const store: Store<IState> = new Vuex.Store(
-  {
-    state,
-    plugins: [
-      VuexPersist(
-        [
-          new PersistLocalStorage(['story', 'character', 'event'], beforePersistLocalStorage),
-          new PersistCookieStorage(
-            ['app'],
-            {
-              cookieOptions: {
-                expires: 365,
-              },
-              beforePersist: beforePersistCookieStorage,
-            },
-          ),
-        ],
-      ),
-    ],
-  },
-);
+export const store: Store<IState> = new Vuex.Store({
+  state,
+  plugins: [
+    VuexPersist([
+      new PersistLocalStorage(['story', 'character', 'event'], beforePersistLocalStorage),
+      new PersistCookieStorage(['app'], {
+        cookieOptions: {
+          expires: 365,
+        },
+        beforePersist: beforePersistCookieStorage,
+      }),
+    ]),
+  ],
+});
 
-store.registerModule(['app'], AppModule, { preserveState: true });
-store.registerModule(['story'], StoryModule, { preserveState: true });
-store.registerModule(['character'], CharacterModule, { preserveState: true });
-store.registerModule(['event'], EventModule, { preserveState: true });
+export const registerModule = (moduleName: string, module: Module<any, any>) => {
+  const moduleIsRegistered: boolean = (store as any)._modules.root._children[moduleName] !== undefined;
+  const stateExists: boolean = store.state[moduleName] !== undefined;
+
+  if (stateExists) {
+    module.state = merge(module.state, store.state[moduleName], {
+      clone: false,
+      arrayMerge: /* istanbul ignore next */ (target: any, source: any) => {
+        return source;
+      },
+    });
+  }
+
+  if (!moduleIsRegistered) {
+    store.registerModule(moduleName, module, { preserveState: false });
+  }
+};
+
+registerModule('app', AppModule);
+registerModule('story', StoryModule);
+registerModule('character', CharacterModule);
+registerModule('event', EventModule);

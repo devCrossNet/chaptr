@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import VueSelect                 from './VueSelect.vue';
+import VueSelect from './VueSelect.vue';
 
 const localVue = createLocalVue();
 
@@ -28,60 +28,75 @@ describe('VueSelect.vue', () => {
   ];
 
   test('renders component', () => {
-    const wrapper = mount(VueSelect, {
+    const wrapper = mount<any>(VueSelect, {
       localVue,
       propsData: {
         options,
         name: 'name',
-        id:   'id',
+        id: 'id',
       },
-      mocks:     {
+      mocks: {
         errors: null,
       },
-    }) as any;
+    });
 
     expect(wrapper.findAll('option')).toHaveLength(5);
     expect(wrapper.find('select').attributes().multiple).toBe(undefined);
   });
 
   test('renders multi component', () => {
-    const wrapper = mount(VueSelect, {
+    const wrapper = mount<any>(VueSelect, {
       localVue,
       propsData: {
         options,
         multiple: true,
-        name:     'name',
-        id:       'id',
+        name: 'name',
+        id: 'id',
       },
-    }) as any;
+    });
 
     expect(wrapper.findAll('option')).toHaveLength(5);
     expect(wrapper.find('select').attributes().multiple).toBe('multiple');
   });
 
+  test('renders disabled component', () => {
+    const wrapper = mount<any>(VueSelect, {
+      localVue,
+      propsData: {
+        options,
+        disabled: true,
+        name: 'name',
+        id: 'id',
+      },
+    });
+
+    expect(wrapper.findAll('option')).toHaveLength(5);
+    expect(wrapper.findAll('.disabled')).toHaveLength(1);
+  });
+
   it('should return list of options', () => {
-    const wrapper = mount(VueSelect, {
+    const wrapper = mount<any>(VueSelect, {
       localVue,
       propsData: {
         options,
         multiple: true,
-        name:     'name',
-        id:       'id',
+        name: 'name',
+        id: 'id',
       },
-    }) as any;
+    });
 
     const event: any = {
       target: {
         options: [
           {
             selected: true,
-            text:     'foo',
-            value:    'foo2',
+            text: 'foo',
+            value: 'foo2',
           },
           {
             selected: false,
-            text:     'bar',
-            value:    'bar2',
+            text: 'bar',
+            value: 'bar2',
           },
         ],
       },
@@ -93,9 +108,9 @@ describe('VueSelect.vue', () => {
   });
 
   test('should display error state', () => {
-    const wrapper = mount(VueSelect, {
+    const wrapper = mount<any>(VueSelect, {
       localVue,
-      mocks:     {
+      mocks: {
         errors: {
           first() {
             return true;
@@ -105,32 +120,11 @@ describe('VueSelect.vue', () => {
       propsData: {
         options,
         multiple: true,
-        name:     'name',
-        id:       'id',
+        name: 'name',
+        id: 'id',
       },
     });
 
     expect(wrapper.findAll(`.error`)).toHaveLength(1);
-  });
-
-  test('should disable', () => {
-    const wrapper = mount(VueSelect, {
-      localVue,
-      mocks:     {
-        errors: {
-          first() {
-            return true;
-          },
-        },
-      },
-      propsData: {
-        options,
-        disabled: true,
-        name:     'name',
-        id:       'id',
-      },
-    });
-
-    expect(wrapper.findAll(`.disabled`)).toHaveLength(1);
   });
 });

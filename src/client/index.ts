@@ -1,16 +1,14 @@
-import Vue                 from 'vue';
-import { Route }           from 'vue-router';
-import { Component }       from 'vue-router/types/router';
-import { createApp, IApp } from '../app/app';
-import { IPreLoad }        from '../server/isomorphic';
-import { HttpService }     from '../app/shared/services/HttpService';
+import Vue from 'vue';
+import { Route } from 'vue-router';
+import { Component } from 'vue-router/types/router';
+import { createApp, IApp } from '@/app/app';
+import { IPreLoad } from '@/server/isomorphic';
+import { HttpService, initHttpService } from '@shared/services/HttpService/HttpService';
 
 if (PRODUCTION) {
   const runtime: any = require('serviceworker-webpack-plugin/lib/runtime');
   if ('serviceWorker' in navigator) {
-    runtime
-    .register()
-    .then((registration: ServiceWorkerRegistration) => {
+    runtime.register().then((registration: ServiceWorkerRegistration) => {
       registration.update();
     });
   }
@@ -22,6 +20,8 @@ i18n.locale = store.state.app.locale;
 i18n.fallbackLocale = 'en';
 i18n.setLocaleMessage(store.state.app.locale, store.state.app.defaultMessages);
 
+initHttpService(store, router);
+
 /**
  * redirect client if server renders a different page than requested
  */
@@ -30,7 +30,7 @@ if (store.state.app.redirectTo !== null) {
 }
 
 /**
- * global error handler that redirects to error page
+ * global error handler that redirects to error page and logs error to express app
  */
 Vue.config.errorHandler = (error: Error) => {
   console.error(error); // tslint:disable-line
@@ -38,7 +38,7 @@ Vue.config.errorHandler = (error: Error) => {
   HttpService.post('/log/error', {
     error: {
       message: error.message,
-      stack:   error.stack,
+      stack: error.stack,
     },
   });
 
@@ -46,33 +46,35 @@ Vue.config.errorHandler = (error: Error) => {
 };
 
 router.onReady(() => {
-  router
-  .beforeResolve((to: Route, from: Route, next: any) => {
+  router.beforeResolve(async (to: Route, from: Route, next: any) => {
     const matched: Component[] = router.getMatchedComponents(to);
     const prevMatched: Component[] = router.getMatchedComponents(from);
     let diffed: boolean = false;
 
     const activated: Component[] = matched.filter((component: Component, i: number) => {
-      return diffed || (diffed = (prevMatched[i] !== component));
+      return diffed || (diffed = prevMatched[i] !== component);
     });
 
     if (!activated.length) {
       return next();
     }
 
-    Promise
-    .all(activated.map((component: Component) => {
+    try {
+      await Promise.all(
+        activated.map((component: Component) => {
+          if ((component as any).prefetch) {
+            return (component as any).prefetch({ store, route: to, router } as IPreLoad);
+          }
 
-      if ((component as any).prefetch) {
-        return (component as any).prefetch({ store, route: to } as IPreLoad);
-      }
+          return Promise.resolve();
+        }),
+      );
 
-      return Promise.resolve();
-    }))
-    .then(() => {
       next();
-    })
-    .catch(next);
+    } catch (e) {
+      console.error(e); // tslint:disable-line
+      next();
+    }
   });
 
   app.$mount('#app');

@@ -1,21 +1,25 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import VueMarkdown               from './VueMarkdown.vue';
+import VueMarkdown from './VueMarkdown.vue';
+import apply = Reflect.apply;
 
 const localVue = createLocalVue();
 
 describe('VueMarkdown.vue', () => {
-
   test('renders component', () => {
     const wrapper = mount(VueMarkdown, {
       localVue,
       slots: {
-        default: ['# foo\n ## bar\n ### baz', ''],
+        default: ['<img src="/test.jpg"/># foo\n ## bar\n ### baz'],
       },
     });
 
     expect(wrapper.find('h1').text()).toBe('foo');
     expect(wrapper.find('h2').text()).toBe('bar');
     expect(wrapper.find('h3').text()).toBe('baz');
+
+    wrapper.vm.$forceUpdate();
+
+    wrapper.destroy();
   });
 
   test('renders component with trimmed text', () => {
@@ -39,4 +43,50 @@ describe('VueMarkdown.vue', () => {
     expect(wrapper.find('code').text()).toBe('foo bar');
   });
 
+  test('click on a link should use the router', () => {
+    const $router = {
+      push: jest.fn(),
+    };
+    const wrapper = mount(VueMarkdown, {
+      localVue,
+      mocks: {
+        $router,
+      },
+      slots: {
+        default: ['[test](/test)'],
+      },
+    });
+
+    const actual = $router.push;
+    const expected = '/test';
+
+    wrapper.find('a').trigger('click');
+
+    expect(actual).toHaveBeenCalledWith(expected);
+  });
+
+  test('click on a link should not use the router', () => {
+    const $router = {
+      push: jest.fn(),
+    };
+    const wrapper = mount(VueMarkdown, {
+      localVue,
+      propsData: {
+        useRouter: false,
+      },
+      mocks: {
+        $router,
+      },
+      slots: {
+        default: ['[test](/test)'],
+      },
+    });
+
+    const actual = $router.push;
+    const expected = '/test';
+
+    wrapper.find('a').trigger('click');
+
+    expect(actual).not.toHaveBeenCalledWith(expected);
+  });
 });

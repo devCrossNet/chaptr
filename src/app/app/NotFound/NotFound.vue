@@ -1,47 +1,50 @@
 <template>
   <div :class="$style.notFound">
-    <vue-grid>
-      <vue-grid-row>
-        <vue-grid-item>
-          <h1>404</h1>
-          <h3>Site not found!</h3>
-        </vue-grid-item>
-      </vue-grid-row>
-    </vue-grid>
+    <vue-icon-vuesion :class="$style.logo" />
+    <vue-headline level="1">404</vue-headline>
+    <vue-headline level="3">Page not found!</vue-headline>
   </div>
 </template>
 
 <script lang="ts">
-  import VueGrid     from '../../shared/components/VueGrid/VueGrid';
-  import VueGridRow  from '../../shared/components/VueGridRow/VueGridRow';
-  import VueGridItem from '../../shared/components/VueGridItem/VueGridItem';
+import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
+import VueIconVuesion from '@components/icons/VueIconVuesion/VueIconVuesion.vue';
 
-  export default {
-    metaInfo:   {
-      title: 'chaptr | page not found',
-      meta:  [
-        {
-          name:    'robots',
-          content: 'NOINDEX,NOFOLLOW',
-        },
-      ],
-    },
-    name:       'NotFound',
-    components: { VueGridItem, VueGridRow, VueGrid },
-    props:      {},
-    data(): any {
-      return {};
-    },
-    computed:   {},
-    methods:    {},
-  };
+export default {
+  metaInfo: {
+    title: 'vuesion - page not found',
+    meta: [
+      {
+        name: 'robots',
+        content: 'NOINDEX,NOFOLLOW',
+      },
+    ],
+  },
+  name: 'NotFound',
+  components: { VueIconVuesion, VueHeadline },
+  props: {},
+  data(): any {
+    return {};
+  },
+  computed: {},
+  methods: {},
+};
 </script>
 
 <style lang="scss" module>
-  @import "../../shared/styles";
+@import '~@/app/shared/design-system';
 
-  .notFound {
-    padding-top: $nav-bar-height;
-    text-align:  center;
-  }
+.notFound {
+  padding-top: $nav-bar-height;
+  text-align: center;
+  width: 300px;
+  height: 300px;
+  margin: auto;
+  margin-top: 25%;
+}
+
+.logo {
+  width: $space-84;
+  height: $space-84;
+}
 </style>

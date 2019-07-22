@@ -1,0 +1,43 @@
+$font-family-headings: 'Lato', Helvetica, sans-serif;
+$font-family: 'Lato', Helvetica, sans-serif;
+
+/* Font Sizes */
+$font-size-small: 80%;
+$font-size: 1.6rem;
+$font-size-h1: 4.8rem;
+$font-size-h2: 3.2rem;
+$font-size-h3: 2.4rem;
+$font-size-h4: 2rem;
+$font-size-h5: 1.6rem;
+$font-size-h6: 1.4rem;
+
+/* Font Weights */
+$font-weight-light: 100;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+$font-weight: $font-weight-light;
+$font-weight-h1: $font-weight-light;
+$font-weight-h2: $font-weight-light;
+$font-weight-h3: $font-weight-light;
+$font-weight-h4: $font-weight-light;
+$font-weight-h5: $font-weight-light;
+$font-weight-h6: $font-weight-light;
+$link-font-weight: $font-weight-light;
+
+/* Line Heights */
+$line-height: $font-size + $space-8;
+$line-height-h1: $font-size-h1 + $space-8;
+$line-height-h2: $font-size-h2 + $space-8;
+$line-height-h3: $font-size-h3 + $space-8;
+$line-height-h4: $font-size-h4 + $space-8;
+$line-height-h5: $font-size-h5 + $space-8;
+$line-height-h6: $font-size-h6 + $space-8;
+
+/* Letter Spacings */
+$letter-spacing: normal;
+$letter-spacing-h1: normal;
+$letter-spacing-h2: normal;
+$letter-spacing-h3: normal;
+$letter-spacing-h4: normal;
+$letter-spacing-h5: normal;
+$letter-spacing-h6: normal;

@@ -4,6 +4,6 @@ export interface ICharacterState {
   characters: ICharacter[];
 }
 
-export const CharacterDefaultState: ICharacterState = {
+export const CharacterDefaultState = (): ICharacterState => ({
   characters: [],
-};
+});

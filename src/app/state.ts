@@ -1,7 +1,7 @@
-import { AppDefaultState, IAppState }         from './app/state';
-import { StoryDefaultState, IStoryState }         from './story/state';
-import { CharacterDefaultState, ICharacterState }         from './character/state';
-import { EventDefaultState, IEventState }         from './event/state';
+import { AppDefaultState, IAppState } from './app/state';
+import { StoryDefaultState, IStoryState } from './story/state';
+import { CharacterDefaultState, ICharacterState } from './character/state';
+import { EventDefaultState, IEventState } from './event/state';
 
 export interface IState {
   [key: string]: any;
@@ -13,16 +13,16 @@ export interface IState {
 }
 
 export const DefaultState: IState = {
-  app:     {
-    ...AppDefaultState,
+  app: {
+    ...AppDefaultState(),
   },
   story: {
-    ...StoryDefaultState,
+    ...StoryDefaultState(),
   },
   character: {
-    ...CharacterDefaultState,
+    ...CharacterDefaultState(),
   },
   event: {
-    ...EventDefaultState,
+    ...EventDefaultState(),
   },
 };

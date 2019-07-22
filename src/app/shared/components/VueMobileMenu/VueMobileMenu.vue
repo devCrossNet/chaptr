@@ -1,39 +1,61 @@
 <template>
   <div :class="$style.vueMobileMenu">
-    <slot />
+    <div :class="$style.buttons">
+      <slot />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-  export default {
-    name:       'VueMobileMenu',
-    components: {},
-    props:      {},
-    data(): any {
-      return {};
-    },
-    computed:   {},
-    methods:    {},
-  };
+export default {
+  name: 'VueMobileMenu',
+  components: {},
+  props: {},
+  data(): any {
+    return {};
+  },
+  computed: {},
+  methods: {},
+};
 </script>
 
 <style lang="scss" module>
-  @import "../../styles";
+@import '../../design-system';
 
-  .vueMobileMenu {
-    position:   fixed;
-    left:       0;
-    right:      0;
-    bottom:     $space-unit;
-    text-align: center;
+.vueMobileMenu {
+  background: $brand-primary-gradient;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  height: 100vh;
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
 
     button {
-      height:        $space-unit * 6;
-      width:         $space-unit * 6;
-      min-width:     auto;
-      padding:       0;
-      border-radius: 50%;
-      margin-right:  $space-unit;
+      display: block;
+      flex: 1 0 $space-32 * 2;
+      cursor: pointer;
+      margin: 0;
+      border-radius: 0;
+      width: $space-32 * 2;
+      background-color: transparent;
+      border: none;
+      color: $brand-text-color-inverse;
+
+      &:hover {
+        background-color: transparent;
+        border: none;
+        color: $brand-text-color-inverse;
+      }
+
+      i {
+        height: $space-24;
+        width: $space-24;
+      }
     }
   }
+}
 </style>
