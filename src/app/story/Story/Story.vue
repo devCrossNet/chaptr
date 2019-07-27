@@ -62,7 +62,6 @@
           <vue-icon-pencil />
         </vue-button>
         <vue-button :aria-label="$t('common.changeView' /* Change View */)" @click="changeView">
-          VIEW
           <vue-icon-book v-if="view === 'time'" />
           <vue-icon-bar-chart v-if="view === 'print'" />
           <vue-icon-clock v-if="view === 'storyline'" />
