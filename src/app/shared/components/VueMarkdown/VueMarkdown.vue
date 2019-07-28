@@ -86,7 +86,7 @@ export default {
   h5,
   h6 {
     font-family: $font-family-headings;
-    margin: 0;
+    margin: $space-16 0 $space-4 0;
   }
 
   h1 {
@@ -144,6 +144,14 @@ export default {
   table td,
   table th {
     padding: $data-table-row-column-padding;
+  }
+
+  ul {
+    margin-left: $space-4;
+  }
+
+  p {
+    margin-bottom: $space-16;
   }
 }
 </style>
