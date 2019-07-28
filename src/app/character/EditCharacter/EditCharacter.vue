@@ -135,7 +135,7 @@
                   autofocus=""
                   name="psychologicalProfile"
                   id="psychologicalProfile"
-                  :placeholder="$t('common.psychologicalProfile' /* Social Profile */)"
+                  :placeholder="$t('common.psychologicalProfile' /* Psychological Profile */)"
                   v-model="character.psychologicalProfile"
                 />
               </vue-grid-item>
