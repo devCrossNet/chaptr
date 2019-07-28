@@ -113,7 +113,7 @@ export default {
   }
 
   .card {
-    flex: 0 1 50%;
+    flex: 1 1 50%;
     display: flex;
   }
 }

@@ -83,10 +83,11 @@ export default {
 
 .vueModal {
   position: fixed;
-  top: $space-8;
-  left: $space-8;
-  bottom: $space-8;
-  right: $space-8;
+  top: 50%;
+  left: 50%;
+  right: unset;
+  bottom: unset;
+  transform: translate(-50%, -50%);
   background: $modal-bg;
   z-index: $modal-index;
   box-shadow: $modal-shadow;
@@ -101,12 +102,6 @@ export default {
     max-width: $modal-max-width;
     min-width: $modal-min-width * 2;
     max-height: 100%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    right: unset;
-    bottom: unset;
-    transform: translate(-50%, -50%);
   }
 }
 

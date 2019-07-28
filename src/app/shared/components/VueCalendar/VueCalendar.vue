@@ -375,7 +375,7 @@ export default {
 
 .calendar {
   width: 100%;
-  max-width: $calendar-max-width;
+  min-width: $calendar-min-width;
   position: relative;
   box-shadow: $calendar-shadow;
   background: $calendar-bg;

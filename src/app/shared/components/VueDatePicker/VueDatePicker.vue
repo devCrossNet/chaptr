@@ -124,8 +124,6 @@ export default {
 
 .calendar {
   @include mediaMin(tabletPortrait) {
-    width: $calendar-max-width !important;
-
     table {
       tr {
         td {

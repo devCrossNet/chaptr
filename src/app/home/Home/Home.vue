@@ -203,14 +203,12 @@ export default {
 @import '../../shared/design-system';
 .home {
   .item {
-    flex-basis: 50%;
+    flex: 1 1 50%;
     display: flex;
-
-    max-width: 50%;
   }
 
   .card {
-    flex-basis: 50%;
+    flex: 1 1 50%;
   }
 }
 </style>
