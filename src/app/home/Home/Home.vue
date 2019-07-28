@@ -9,15 +9,17 @@
             <vue-headline level="1">{{ $t('common.yourStories' /* Your Stories */) }}</vue-headline>
           </vue-grid-item>
 
-          <vue-grid-item v-for="story in allStories" :key="story.id" :class="$style.card">
-            <vue-card>
-              <vue-card-header :title="story.title" :color="story.color"></vue-card-header>
-              <vue-card-body>{{ story.abstract }}</vue-card-body>
-              <vue-card-footer>
-                <vue-button color="secondary" as="router-link" :target="`/story/${story.id}`">
-                  <vue-icon-pencil /> &nbsp; {{ $t('common.edit' /* Edit */) }}
-                </vue-button>
-              </vue-card-footer>
+          <vue-grid-item v-for="story in allStories" :key="story.id" :class="$style.item">
+            <vue-card :class="$style.card">
+              <template slot="header">{{ story.title }}</template>
+
+              <vue-markdown>
+                {{ story.abstract }}
+              </vue-markdown>
+
+              <vue-button slot="footer" color="secondary" as="router-link" :target="`/story/${story.id}`">
+                <vue-icon-pencil />
+              </vue-button>
             </vue-card>
           </vue-grid-item>
         </vue-grid-row>
@@ -76,9 +78,6 @@ import VueModal from '../../shared/components/VueModal/VueModal.vue';
 import VueInput from '../../shared/components/VueInput/VueInput.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueCard from '@components/VueCard/VueCard.vue';
-import VueCardHeader from '@components/VueCard/VueCardHeader/VueCardHeader.vue';
-import VueCardBody from '@components/VueCard/VueCardBody/VueCardBody.vue';
-import VueCardFooter from '@components/VueCard/VueCardFooter/VueCardFooter.vue';
 import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
@@ -87,12 +86,14 @@ import VueIconUpload from '@components/icons/VueIconUpload/VueIconUpload.vue';
 import VueIconShare from '@components/icons/VueIconShare/VueIconShare.vue';
 import VueIconKeyboard from '@components/icons/VueIconKeyboard/VueIconKeyboard.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
+import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 
 export default {
   metaInfo: {
     title: 'Chaptr',
   },
   components: {
+    VueMarkdown,
     VueIconPencil,
     VueIconKeyboard,
     VueIconShare,
@@ -101,9 +102,6 @@ export default {
     VueIconAdd,
     VueLayout,
     VueIconBook,
-    VueCardFooter,
-    VueCardBody,
-    VueCardHeader,
     VueCard,
     VueHeadline,
     VueInput,
@@ -204,9 +202,15 @@ export default {
 <style lang="scss" module>
 @import '../../shared/design-system';
 .home {
-}
+  .item {
+    flex-basis: 50%;
+    display: flex;
 
-.card {
-  flex: 0 1 50%;
+    max-width: 50%;
+  }
+
+  .card {
+    flex-basis: 50%;
+  }
 }
 </style>

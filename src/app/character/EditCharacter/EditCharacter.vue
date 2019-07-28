@@ -13,106 +13,135 @@
           </vue-grid-item>
         </vue-grid-row>
 
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              autofocus=""
-              name="name"
-              id="name"
-              required
-              :placeholder="$t('common.name' /* Name */)"
-              validation="required"
-              v-model="character.name"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
+        <vue-tab-group>
+          <vue-tab-item :title="$t('common.appearance' /* Appearance */)">
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  autofocus=""
+                  name="name"
+                  id="name"
+                  required
+                  :placeholder="$t('common.name' /* Name */)"
+                  validation="required"
+                  v-model="character.name"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-date-picker
+                  name="birthday"
+                  id="birthday"
+                  :min-date="new Date('1950-01-01')"
+                  :current-date="character.birthday ? new Date(character.birthday) : new Date()"
+                  :first-day-of-week="1"
+                  :placeholder="$t('common.birthday' /* Birthday */)"
+                  @change="character.birthday = $event.toUTCString()"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="address"
+                  id="address"
+                  :placeholder="$t('common.address' /* Address */)"
+                  validation="required"
+                  v-model="character.address"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="eyeColor"
+                  id="eyeColor"
+                  :placeholder="$t('common.eyeColor' /* Eye Color */)"
+                  v-model="character.eyeColor"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="hairColor"
+                  id="hairColor"
+                  :placeholder="$t('common.hairColor' /* Hair Color */)"
+                  v-model="character.hairColor"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="skinColor"
+                  id="skinColor"
+                  :placeholder="$t('common.skinColor' /* Skin Color */)"
+                  v-model="character.skinColor"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="height"
+                  id="height"
+                  :placeholder="$t('common.height' /* Height */)"
+                  v-model="character.height"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="weight"
+                  id="weight"
+                  :placeholder="$t('common.weight' /* Weight */)"
+                  v-model="character.weight"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-textarea
+                  name="characteristics"
+                  id="characteristics"
+                  :placeholder="$t('common.characteristics' /* Characteristics */)"
+                  v-model="character.characteristics"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+          </vue-tab-item>
 
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-date-picker
-              name="birthday"
-              id="birthday"
-              :min-date="new Date('1950-01-01')"
-              :current-date="character.birthday ? new Date(character.birthday) : new Date()"
-              :first-day-of-week="1"
-              :placeholder="$t('common.birthday' /* Birthday */)"
-              @change="character.birthday = $event.toUTCString()"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
+          <vue-tab-item :title="$t('common.socialProfile' /* Social Profile */)">
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-textarea
+                  autofocus=""
+                  name="socialProfile"
+                  id="socialProfile"
+                  :placeholder="$t('common.socialProfile' /* Social Profile */)"
+                  v-model="character.socialProfile"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+          </vue-tab-item>
 
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="address"
-              id="address"
-              required
-              :placeholder="$t('common.address' /* Address */)"
-              validation="required"
-              v-model="character.address"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="eyeColor"
-              id="eyeColor"
-              required
-              :placeholder="$t('common.eyeColor' /* Eye Color */)"
-              v-model="character.eyeColor"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="hairColor"
-              id="hairColor"
-              required
-              :placeholder="$t('common.hairColor' /* Hair Color */)"
-              v-model="character.hairColor"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="skinColor"
-              id="skinColor"
-              required
-              :placeholder="$t('common.skinColor' /* Skin Color */)"
-              v-model="character.skinColor"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="height"
-              id="height"
-              required
-              :placeholder="$t('common.height' /* Height */)"
-              v-model="character.height"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-input
-              name="weight"
-              id="weight"
-              required
-              :placeholder="$t('common.weight' /* Weight */)"
-              v-model="character.weight"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
+          <vue-tab-item :title="$t('common.psychologicalProfile' /* Psychological Profile */)">
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-textarea
+                  autofocus=""
+                  name="psychologicalProfile"
+                  id="psychologicalProfile"
+                  :placeholder="$t('common.psychologicalProfile' /* Social Profile */)"
+                  v-model="character.psychologicalProfile"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+          </vue-tab-item>
+        </vue-tab-group>
 
         <vue-grid-row>
           <vue-grid-item>
@@ -151,6 +180,9 @@ import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
+import VueTabGroup from '@components/VueTabGroup/VueTabGroup.vue';
+import VueTabItem from '@components/VueTabGroup/VueTabItem/VueTabItem.vue';
+import VueTextarea from '@components/VueTextarea/VueTextarea.vue';
 
 export default {
   name: 'EditCharacter',
@@ -161,6 +193,9 @@ export default {
     title: 'Chaptr | Edit Character',
   },
   components: {
+    VueTextarea,
+    VueTabItem,
+    VueTabGroup,
     VueIconArrowLeft,
     VueMobileMenu,
     VueLayout,
@@ -206,7 +241,9 @@ export default {
         skinColor: '',
         height: '',
         weight: '',
-        vitae: [],
+        characteristics: '',
+        socialProfile: '',
+        psychologicalProfile: '',
       },
     };
   },
@@ -222,5 +259,8 @@ export default {
 @import '../../shared/design-system';
 
 .editCharacter {
+  textarea {
+    min-height: 500px;
+  }
 }
 </style>

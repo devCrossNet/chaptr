@@ -12,29 +12,37 @@
 
         <vue-grid-row v-show="view !== 'storyline'" v-for="event in orderedEvents" :key="event.id">
           <vue-grid-item>
-            <vue-card :class="$style.eventPanel">
-              <vue-card-header
-                :title="event.storylineOrder + 1 + '. ' + event.title"
-                :subtitle="$d(event.date ? new Date(event.date) : new Date())"
-              />
-              <vue-card-body>
-                <label>Storyline:</label>
-                <div :class="$style.storylineColor" :style="{ background: getStorylineColor(event.storyline) }">
-                  {{ event.storyline }}
-                </div>
+            <vue-card>
+              <template slot="header">{{ event.title }}</template>
 
-                <div v-show="event.notes && event.notes !== ''">
-                  <label>Notes:</label>
-                  <vue-truncate :lines="1">
-                    {{ event.notes }}
-                  </vue-truncate>
-                </div>
-              </vue-card-body>
-              <vue-card-footer>
-                <vue-button color="secondary" as="router-link" :target="`/event/edit/${$route.params.id}/${event.id}`">
-                  <vue-icon-pencil /> &nbsp; {{ $t('common.edit' /* Edit */) }}
-                </vue-button>
-              </vue-card-footer>
+              <div v-show="event.notes && event.notes !== ''">
+                <vue-grid-row>
+                  <vue-grid-item :class="$style.characters">
+                    <label>{{ $t('common.characters' /* Characters */) }}</label>
+                    <ul>
+                      <li v-for="characterId in event.characters" :key="characterId">
+                        {{ getCharacterById(characterId).name }}
+                      </li>
+                    </ul>
+                  </vue-grid-item>
+
+                  <vue-grid-item>
+                    <label>{{ $t('common.notes' /* Notes */) }}</label>
+                    <vue-markdown>
+                      {{ event.notes }}
+                    </vue-markdown>
+                  </vue-grid-item>
+                </vue-grid-row>
+              </div>
+
+              <vue-button
+                slot="footer"
+                color="secondary"
+                as="router-link"
+                :target="`/event/edit/${$route.params.id}/${event.id}`"
+              >
+                <vue-icon-pencil />
+              </vue-button>
             </vue-card>
           </vue-grid-item>
         </vue-grid-row>
@@ -81,12 +89,7 @@ import VueMobileMenu from '../../shared/components/VueMobileMenu/VueMobileMenu.v
 import { mapActions, mapGetters } from 'vuex';
 import { IEvent } from '../../event/IEvent';
 import VueCard from '../../shared/components/VueCard/VueCard.vue';
-import VueCardHeader from '../../shared/components/VueCard/VueCardHeader/VueCardHeader.vue';
-import VueCardBody from '../../shared/components/VueCard/VueCardBody/VueCardBody.vue';
-import VueCardFooter from '../../shared/components/VueCard/VueCardFooter/VueCardFooter.vue';
 import StorylineView from '../StorylineView/StorylineView.vue';
-import { StorylineColorMapping } from '../StorylineColorMapping';
-import VueTruncate from '../../shared/components/VueTruncate/VueTruncate.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
@@ -96,6 +99,8 @@ import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueIconBarChart from '@components/icons/VueIconBarChart/VueIconBarChart.vue';
 import VueIconClock from '@components/icons/VueIconClock/VueIconClock.vue';
+import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
+import { ICharacter } from '@/app/character/ICharacter';
 
 export default {
   metaInfo() {
@@ -104,6 +109,7 @@ export default {
     };
   },
   components: {
+    VueMarkdown,
     VueIconClock,
     VueIconBarChart,
     VueIconBook,
@@ -113,11 +119,7 @@ export default {
     VueIconArrowLeft,
     VueLayout,
     VueHeadline,
-    VueTruncate,
     StorylineView,
-    VueCardFooter,
-    VueCardBody,
-    VueCardHeader,
     VueCard,
     VueMobileMenu,
     VueGrid,
@@ -129,6 +131,7 @@ export default {
     ...mapGetters('story', ['getStoryById']),
     ...mapGetters('event', ['getEventsByStoryId']),
     ...mapGetters('app', ['menuPosition']),
+    ...mapGetters('character', ['getCharacterById']),
     orderedEvents() {
       if (this.view === 'time') {
         return this.events.slice(0).sort(
@@ -156,9 +159,6 @@ export default {
   methods: {
     ...mapActions('story', ['setCurrentStory']),
     ...mapActions('app', ['changeMenuPosition']),
-    getStorylineColor(storyline: number) {
-      return StorylineColorMapping[storyline - 1];
-    },
     changeView() {
       if (this.view === 'print') {
         this.view = 'storyline';
@@ -182,25 +182,15 @@ export default {
 @import '../../shared/design-system';
 
 .story {
-}
-
-.eventPanel {
   label {
-    display: inline-block;
+    display: block;
     font-family: $font-family-headings;
-    font-weight: 400;
-    margin-top: $space-unit;
+    font-weight: $font-weight-bold;
+    margin: $space-8 0;
   }
-}
 
-.storylineColor {
-  height: $space-unit * 4;
-  width: $space-unit * 4;
-  display: inline-block;
-  position: relative;
-  margin-left: $space-unit;
-  text-align: center;
-  padding: $space-unit * 0.5;
-  font-family: $font-family-headings;
+  .characters {
+    flex: 0 1 25%;
+  }
 }
 </style>

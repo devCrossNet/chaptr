@@ -10,31 +10,27 @@
 
         <vue-grid-row>
           <vue-grid-item v-for="character in allCharacters" :key="character.id" :class="$style.card">
-            <vue-card :class="$style.characterPanel">
-              <vue-card-header :title="character.name" />
-              <vue-card-body>
-                <div>
-                  <label>{{ $t('common.birthday' /* Birthday */) }}</label>
-                  {{ $d(character.birthday ? new Date(character.birthday) : new Date()) }}
-                </div>
-                <div>
-                  <label>{{ $t('common.address' /* Address */) }}</label>
-                  {{ character.address }}
-                </div>
-                <div>
-                  <label>{{ $t('common.skinColor' /* Skin Color */) }}</label>
-                  {{ character.skinColor }}
-                </div>
-                <div>
-                  <label>{{ $t('common.height' /* Height */) }}</label>
-                  {{ character.height }}
-                </div>
-              </vue-card-body>
-              <vue-card-footer>
-                <vue-button color="secondary" as="router-link" :target="`/character/edit/${character.id}`">
-                  <vue-icon-pencil /> &nbsp; {{ $t('common.edit' /* Edit */) }}
-                </vue-button>
-              </vue-card-footer>
+            <vue-card>
+              <template slot="header">
+                {{ character.name + ` (${getAge(character)})` }}</template
+              >
+
+              <div>
+                <label>{{ $t('common.characteristics' /* Characteristics */) }}</label>
+                <vue-markdown>{{ character.characteristics }}</vue-markdown>
+              </div>
+              <div>
+                <label>{{ $t('common.socialProfile' /* Social Profile */) }}</label>
+                <vue-markdown>{{ character.socialProfile }}</vue-markdown>
+              </div>
+              <div>
+                <label>{{ $t('common.psychologicalProfile' /* Psychological Profile */) }}</label>
+                <vue-markdown>{{ character.psychologicalProfile }}</vue-markdown>
+              </div>
+
+              <vue-button slot="footer" color="secondary" as="router-link" :target="`/character/edit/${character.id}`">
+                <vue-icon-pencil />
+              </vue-button>
             </vue-card>
           </vue-grid-item>
         </vue-grid-row>
@@ -64,28 +60,25 @@ import VueButton from '../../shared/components/VueButton/VueButton.vue';
 import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
 import VueMobileMenu from '../../shared/components/VueMobileMenu/VueMobileMenu.vue';
 import VueCard from '../../shared/components/VueCard/VueCard.vue';
-import VueCardHeader from '../../shared/components/VueCard/VueCardHeader/VueCardHeader.vue';
-import VueCardBody from '../../shared/components/VueCard/VueCardBody/VueCardBody.vue';
-import VueCardFooter from '../../shared/components/VueCard/VueCardFooter/VueCardFooter.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
+import { ICharacter } from '@/app/character/ICharacter';
+import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 
 export default {
   metaInfo: {
     title: 'Character',
   },
   components: {
+    VueMarkdown,
     VueIconAdd,
     VueIconPencil,
     VueIconArrowLeft,
     VueHeadline,
     VueLayout,
-    VueCardFooter,
-    VueCardBody,
-    VueCardHeader,
     VueCard,
     VueMobileMenu,
     VueGrid,
@@ -100,6 +93,10 @@ export default {
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition']),
+    getAge /* istanbul ignore next */(character: ICharacter) {
+      const birthday = character.birthday ? new Date(character.birthday) : new Date();
+      return new Date(Date.now() - birthday.getTime()).getUTCFullYear() - 1970;
+    },
   },
 };
 </script>
@@ -108,18 +105,16 @@ export default {
 @import '../../shared/design-system';
 
 .character {
-}
-
-.characterPanel {
   label {
     display: block;
     font-family: $font-family-headings;
-    font-weight: 400;
-    margin-top: $space-unit;
+    font-weight: $font-weight-bold;
+    margin-top: $space-8;
   }
-}
 
-.card {
-  flex: 0 1 50%;
+  .card {
+    flex: 0 1 50%;
+    display: flex;
+  }
 }
 </style>

@@ -8,7 +8,7 @@ export interface ICharacter {
   skinColor: string;
   height?: string;
   weight?: string;
-  vitae?: any[];
-  degree?: string;
-  hobbies?: string;
+  characteristics?: string;
+  socialProfile?: string;
+  psychologicalProfile?: string;
 }

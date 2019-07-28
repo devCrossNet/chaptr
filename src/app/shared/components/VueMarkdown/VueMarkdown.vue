@@ -145,9 +145,5 @@ export default {
   table th {
     padding: $data-table-row-column-padding;
   }
-
-  p {
-    margin: $space-12 0;
-  }
 }
 </style>

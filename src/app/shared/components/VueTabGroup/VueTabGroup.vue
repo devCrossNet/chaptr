@@ -105,6 +105,7 @@ export default {
     position: relative;
     border: 1px solid transparent;
     border-bottom: $tab-group-border;
+    opacity: 0.6;
 
     .bg {
       position: absolute;
@@ -116,15 +117,20 @@ export default {
       transition-property: opacity, transform;
       transition-duration: 300ms;
       transition-timing-function: linear;
-      background: $tab-group-header-item-hover-bg;
+      background: $tab-group-header-item-active-bg;
+    }
+
+    &:hover {
+      opacity: 1;
     }
 
     &.active {
       border: $tab-group-border;
-      border-bottom: none;
+      border-bottom: 1px solid $brand-secondary;
+      opacity: 1;
 
       .title {
-        color: $tab-group-header-item-hover-color;
+        color: $tab-group-header-item-active-color;
       }
 
       .bg {

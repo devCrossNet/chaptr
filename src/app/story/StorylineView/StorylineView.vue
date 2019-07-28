@@ -46,7 +46,7 @@ export default {
     },
   },
   computed: {
-    storylineCount() {
+    storylineCount /* istanbul ignore next */() {
       const storylines: any = [];
 
       this.events.forEach((event: IEvent) => {
