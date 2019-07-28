@@ -65,6 +65,7 @@
     "lru-cache": "5.1.1",
     "marked": "0.6.2",
     "serve-favicon": "2.5.0",
+    "simplemde": "1.11.2",
     "vee-validate": "2.0.9",
     "vue": "^2.6.10",
     "vue-i18n": "8.11.2",

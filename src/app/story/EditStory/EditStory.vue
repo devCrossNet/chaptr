@@ -29,20 +29,6 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <label>{{ $t('common.color' /* Color */) }}</label>
-            <vue-select
-              name="color"
-              id="color"
-              v-model="story.color"
-              :options="colorOptions"
-              validation="required"
-              required
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
             <vue-textarea
               name="abstract"
               id="abstract"
@@ -131,44 +117,13 @@ export default {
       this.$router.push(`/story/${this.story.id}`);
     },
   },
-  data(): { story: IStory; colorOptions: any[] } {
+  data(): { story: IStory } {
     return {
       story: {
         id: null,
         title: '',
-        color: '',
         abstract: '',
       },
-      colorOptions: [
-        {
-          label: this.$t('common.choose.color' /* Choose a Color */),
-          value: '',
-        },
-        {
-          label: this.$t('common.colors.coral' /* Coral */),
-          value: '#ff4b44',
-        },
-        {
-          label: this.$t('common.colors.blue' /* Blue */),
-          value: '#007d92',
-        },
-        {
-          label: this.$t('common.colors.green' /* Green */),
-          value: '#50a100',
-        },
-        {
-          label: this.$t('common.colors.red' /* Red */),
-          value: '#d40a00',
-        },
-        {
-          label: this.$t('common.colors.yellow' /* Yellow */),
-          value: '#fdae55',
-        },
-        {
-          label: this.$t('common.colors.grey' /* Grey */),
-          value: '#7a7a7c',
-        },
-      ],
     };
   },
   mounted() {

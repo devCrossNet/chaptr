@@ -3,7 +3,7 @@ import VueTextArea from './VueTextArea.vue';
 
 const localVue = createLocalVue();
 
-describe('VueTextArea.vue', () => {
+xdescribe('VueTextArea.vue', () => {
   test('renders component', () => {
     const wrapper = mount<any>(VueTextArea, {
       localVue,

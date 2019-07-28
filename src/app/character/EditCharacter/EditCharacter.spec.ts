@@ -14,16 +14,16 @@ describe('EditCharacter.vue', () => {
   const character: ICharacter = {
     id: 'foo',
     name: 'foo bar',
-    address: '',
     birthday: '',
-    degree: '',
+    address: '',
     eyeColor: '',
     hairColor: '',
-    height: '',
-    hobbies: '',
     skinColor: '',
-    vitae: [''],
+    height: '',
     weight: '',
+    characteristics: '',
+    socialProfile: '',
+    psychologicalProfile: '',
   };
 
   beforeEach(() => {

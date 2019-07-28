@@ -1,6 +1,6 @@
 export interface IStory {
   id: string;
   title: string;
-  color: string;
+  color?: string;
   abstract?: string;
 }
