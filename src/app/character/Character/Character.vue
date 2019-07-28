@@ -9,7 +9,7 @@
         </vue-grid-row>
 
         <vue-grid-row>
-          <vue-grid-item v-for="character in allCharacters" :key="character.id" :class="$style.card">
+          <vue-grid-item fill v-for="character in allCharacters" :key="character.id" :class="$style.card">
             <vue-card>
               <template slot="header">
                 {{ character.name + ` (${getAge(character)})` }}</template
@@ -113,7 +113,6 @@ export default {
   }
 
   .card {
-    flex: 1 1 50%;
     display: flex;
   }
 }
