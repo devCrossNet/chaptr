@@ -120,9 +120,15 @@ export default {
     },
   },
   methods: {
-    ...mapActions('app', ['changeMenuPosition']),
+    ...mapActions('app', ['changeMenuPosition', 'changeLocale']),
     addStory() {
       this.$router.push('/story/edit');
+    },
+    replaceState(newState: IState) {
+      const oldState: IState = cloneDeep(this.$store.state);
+      this.$store.replaceState(merge(oldState, newState));
+      this.changeLocale('foo');
+      this.changeLocale(newState.app.locale);
     },
     saveState() {
       const state: IState = cloneDeep(this.$store.state);
@@ -154,10 +160,9 @@ export default {
         const fileReader = new FileReader();
 
         fileReader.onload = (e: any) => {
-          const state: IState = cloneDeep(this.$store.state);
           const loadedState = JSON.parse(e.target.result);
 
-          this.$store.replaceState(merge(state, loadedState));
+          this.replaceState(loadedState);
         };
 
         fileReader.readAsText(files.item(0));
@@ -174,8 +179,7 @@ export default {
     loadStateFromServer() {
       HttpService.get(`/share/${this.code}`)
         .then((res: any) => {
-          const state: IState = cloneDeep(this.$store.state);
-          this.$store.replaceState(merge(state, res.data.content));
+          this.replaceState(res.data.content);
           addNotification({
             title: 'Stories restored!',
             text: 'Your stories are now transferred',
