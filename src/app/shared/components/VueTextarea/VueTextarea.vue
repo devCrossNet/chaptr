@@ -71,6 +71,17 @@ export default {
   }
 
   :global {
+    .CodeMirror-cursor {
+      border-color: $brand-text-color;
+      margin: 0 1px;
+      height: $font-size;
+    }
+
+    .CodeMirror-selectedtext {
+      background: palette-color-level('grey', 70);
+      padding: $space-4 0;
+    }
+
     .editor-toolbar {
       background: $brand-bg-color;
       border-top: $input-border-dirty;
