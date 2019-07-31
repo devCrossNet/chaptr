@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import { saveAs } from 'file-saver';
 import { mapActions, mapGetters } from 'vuex';
 import VueGrid from '../../shared/components/VueGrid/VueGrid.vue';
 import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
@@ -137,20 +138,7 @@ export default {
 
       const newBlob = new Blob([JSON.stringify(state)], { type: 'application/json;' });
       const filename = `chaptr-${new Date().getTime()}.json`;
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(newBlob, filename);
-        return;
-      }
-      const data = window.URL.createObjectURL(newBlob);
-      const link = document.createElement('a');
-      link.href = data;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(data);
-      }, 1000);
+      saveAs(newBlob, filename);
     },
     loadState() {
       this.$refs.fileupload.click();

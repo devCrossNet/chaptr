@@ -74,12 +74,18 @@
           <vue-icon-bar-chart v-if="view === 'print'" />
           <vue-icon-clock v-if="view === 'storyline'" />
         </vue-button>
+        <vue-button @click="exportToWord" :aria-label="$t('common.share.exportToWord' /* Export to Word */)">
+          <vue-icon-word />
+        </vue-button>
       </vue-mobile-menu>
     </vue-layout>
   </div>
 </template>
 
 <script lang="ts">
+import marked from 'marked';
+import * as htmlDocx from 'html-docx-js/dist/html-docx';
+import { saveAs } from 'file-saver';
 import VueGrid from '../../shared/components/VueGrid/VueGrid.vue';
 import VueGridItem from '../../shared/components/VueGridItem/VueGridItem.vue';
 import VueButton from '../../shared/components/VueButton/VueButton.vue';
@@ -100,7 +106,19 @@ import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueIconBarChart from '@components/icons/VueIconBarChart/VueIconBarChart.vue';
 import VueIconClock from '@components/icons/VueIconClock/VueIconClock.vue';
 import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
-import { ICharacter } from '@/app/character/ICharacter';
+import VueIconWord from '@components/icons/VueIconWord/VueIconWord.vue';
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false,
+});
 
 export default {
   metaInfo() {
@@ -109,6 +127,7 @@ export default {
     };
   },
   components: {
+    VueIconWord,
     VueMarkdown,
     VueIconClock,
     VueIconBarChart,
@@ -167,6 +186,22 @@ export default {
       } else {
         this.view = 'print';
       }
+    },
+    exportToWord /* istanbul ignore next */() {
+      const story: IStory = this.story;
+      let text = `# ${story.title}\n\n## Abstract\n\n${story.abstract}\n\n## Story\n\n`;
+
+      this.events.forEach((e: IEvent) => {
+        text += `### ${e.title} *(${
+          e ? new Date(e.date).toDateString() : 'no date information'
+        })*\n\n**Characters**: ${e.characters
+          .map((characterId: string) => this.getCharacterById(characterId).name)
+          .join(', ')}\n\n${e.notes}\n\n`;
+      });
+
+      const html = `<!DOCTYPE html><html><body>${(marked as any)(text)}</body></html>`;
+      const converted = htmlDocx.asBlob(html);
+      saveAs(converted, `${story.title}.docx`);
     },
   },
   mounted() {
