@@ -14,3 +14,13 @@ declare module 'marked' {
   const marked: any;
   export = marked;
 }
+
+declare module 'file-saver' {
+  const saveAs: any;
+  export const saveAs;
+}
+
+declare module 'html-docx-js/dist/html-docx' {
+  const htmlDocx: any;
+  export = htmlDocx;
+}

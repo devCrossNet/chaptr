@@ -13,7 +13,7 @@ export const CharacterModule: Module<ICharacterState, ICharacterState> = {
     ...CharacterGetters,
   },
   state: {
-    ...CharacterDefaultState,
+    ...CharacterDefaultState(),
   },
   mutations: {
     ...CharacterMutations,
