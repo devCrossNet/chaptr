@@ -13,7 +13,7 @@ export const EventModule: Module<IEventState, IEventState> = {
     ...EventGetters,
   },
   state: {
-    ...EventDefaultState,
+    ...EventDefaultState(),
   },
   mutations: {
     ...EventMutations,

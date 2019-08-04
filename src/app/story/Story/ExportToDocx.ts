@@ -4,6 +4,8 @@ import { saveAs } from 'file-saver';
 import { IStory } from '@/app/story/IStory';
 import { IEvent } from '@/app/event/IEvent';
 import { ICharacter } from '@/app/character/ICharacter';
+import { IPlace } from '@/app/place/IPlace';
+import { IItem } from '@/app/item/IItem';
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -55,14 +57,49 @@ const getCharacterList = (characters: ICharacter[]) => {
 
   return text + '\n\n';
 };
+/* istanbul ignore next */
+const getPlaceList = (places: IPlace[]) => {
+  let text = `## Places\n\n`;
+
+  places.forEach((place: IPlace) => {
+    text += '### ' + place.name + '\n\n';
+    text += 'Type: ' + place.type + '\n';
+    text += 'Location: ' + place.location + '\n';
+    text += '**Notes**\n' + place.notes + '\n\n';
+  });
+
+  return text + '\n\n';
+};
+/* istanbul ignore next */
+const getItemList = (items: IItem[]) => {
+  let text = `## Items\n\n`;
+
+  items.forEach((item: IItem) => {
+    text += '### ' + item.name + '\n\n';
+    text += 'Type: ' + item.type + '\n';
+    text += 'Location: ' + item.location + '\n';
+    text += '**Notes**\n' + item.notes + '\n\n';
+  });
+
+  return text + '\n\n';
+};
 
 /* istanbul ignore next */
-export const ExportToDocx = (story: IStory, events: IEvent[], getCharacterById: any, characters: ICharacter[]) => {
+export const ExportToDocx = (
+  story: IStory,
+  events: IEvent[],
+  getCharacterById: any,
+  characters: ICharacter[],
+  places: IPlace[],
+  items: IItem[],
+) => {
   let text = getDocumentTitle(story);
 
   text += getAbstract(story);
   text += getStory(story, events, getCharacterById);
   text += getCharacterList(characters);
+  text += getPlaceList(places);
+  text += getItemList(items);
 
   const html = `<!DOCTYPE html><html><body>${(marked as any)(text)}</body></html>`;
   const converted = htmlDocx.asBlob(html);

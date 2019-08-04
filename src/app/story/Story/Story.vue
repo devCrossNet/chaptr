@@ -59,6 +59,12 @@
         >
           <vue-icon-user />
         </vue-button>
+        <vue-button primary :aria-label="$t('common.add.place' /* Add a new Place */)" @click="$router.push('/place')">
+          <vue-icon-globe />
+        </vue-button>
+        <vue-button primary :aria-label="$t('common.add.item' /* Add a new Item */)" @click="$router.push('/item')">
+          <vue-icon-suit-case />
+        </vue-button>
         <vue-button
           accent
           :aria-label="$t('common.add.event' /* Add a new Event */)"
@@ -105,6 +111,8 @@ import VueIconClock from '@components/icons/VueIconClock/VueIconClock.vue';
 import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 import VueIconWord from '@components/icons/VueIconWord/VueIconWord.vue';
 import { ExportToDocx } from '@/app/story/Story/ExportToDocx';
+import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
+import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
 
 export default {
   metaInfo() {
@@ -113,6 +121,8 @@ export default {
     };
   },
   components: {
+    VueIconSuitCase,
+    VueIconGlobe,
     VueIconWord,
     VueMarkdown,
     VueIconClock,
@@ -137,6 +147,8 @@ export default {
     ...mapGetters('event', ['getEventsByStoryId']),
     ...mapGetters('app', ['menuPosition']),
     ...mapGetters('character', ['allCharacters', 'getCharacterById']),
+    ...mapGetters('place', ['allPlaces']),
+    ...mapGetters('item', ['allItems']),
     orderedEvents() {
       if (this.view === 'time') {
         return this.events.slice(0).sort(
@@ -174,7 +186,7 @@ export default {
       }
     },
     exportToDocx /* istanbul ignore next */() {
-      ExportToDocx(this.story, this.events, this.getCharacterById, this.allCharacters);
+      ExportToDocx(this.story, this.events, this.getCharacterById, this.allCharacters, this.allPlaces, this.allItems);
     },
   },
   mounted() {

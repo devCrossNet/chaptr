@@ -9,6 +9,8 @@ import { AppModule } from './app/module';
 import { StoryModule } from './story/module';
 import { CharacterModule } from './character/module';
 import { EventModule } from './event/module';
+import { PlaceModule } from '@/app/place/module';
+import { ItemModule } from '@/app/item/module';
 
 Vue.use(Vuex);
 
@@ -32,7 +34,7 @@ export const store: Store<IState> = new Vuex.Store({
   state,
   plugins: [
     VuexPersist([
-      new PersistLocalStorage(['story', 'character', 'event'], beforePersistLocalStorage),
+      new PersistLocalStorage(['story', 'character', 'event', 'place', 'item'], beforePersistLocalStorage),
       new PersistCookieStorage(['app'], {
         cookieOptions: {
           expires: 365,
@@ -65,3 +67,5 @@ registerModule('app', AppModule);
 registerModule('story', StoryModule);
 registerModule('character', CharacterModule);
 registerModule('event', EventModule);
+registerModule('place', PlaceModule);
+registerModule('item', ItemModule);

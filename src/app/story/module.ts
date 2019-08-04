@@ -13,7 +13,7 @@ export const StoryModule: Module<IStoryState, IStoryState> = {
     ...StoryGetters,
   },
   state: {
-    ...StoryDefaultState,
+    ...StoryDefaultState(),
   },
   mutations: {
     ...StoryMutations,

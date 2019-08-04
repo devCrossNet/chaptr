@@ -70,7 +70,7 @@ import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 
 export default {
   metaInfo: {
-    title: 'Character',
+    title: 'Characters',
   },
   components: {
     VueMarkdown,
