@@ -8,9 +8,57 @@
           </vue-grid-item>
         </vue-grid-row>
 
-        <storyline-view :events="events" v-show="view === 'storyline'" />
+        <vue-grid-row v-show="view === 'print'">
+          <vue-grid-item>
+            <vue-accordion multiple>
+              <vue-accordion-item
+                initOpen
+                :title="`Chapter: ${chapter.name}`"
+                v-for="chapter in chapters"
+                :key="chapter.name"
+              >
+                <vue-grid-row v-for="event in chapter.events" :key="event.id">
+                  <vue-grid-item>
+                    <vue-card>
+                      <template slot="header">{{ event.title }}</template>
 
-        <vue-grid-row v-show="view !== 'storyline'" v-for="event in orderedEvents" :key="event.id">
+                      <div v-show="event.notes && event.notes !== ''">
+                        <vue-grid-row>
+                          <vue-grid-item :class="$style.characters">
+                            <label>{{ $t('common.characters' /* Characters */) }}</label>
+                            <ul>
+                              <li v-for="characterId in event.characters" :key="characterId">
+                                {{ getCharacterById(characterId).name }}
+                              </li>
+                            </ul>
+                          </vue-grid-item>
+
+                          <vue-grid-item>
+                            <label>{{ $t('common.notes' /* Notes */) }}</label>
+                            <vue-markdown>
+                              {{ event.notes }}
+                            </vue-markdown>
+                          </vue-grid-item>
+                        </vue-grid-row>
+                      </div>
+
+                      <vue-button
+                        slot="footer"
+                        color="secondary"
+                        as="router-link"
+                        :target="`/event/edit/${$route.params.id}/${event.id}`"
+                      >
+                        <vue-icon-pencil />
+                      </vue-button>
+                    </vue-card>
+                  </vue-grid-item>
+                </vue-grid-row>
+              </vue-accordion-item>
+            </vue-accordion>
+          </vue-grid-item>
+        </vue-grid-row>
+
+        <vue-grid-row v-show="view === 'time'" v-for="event in orderedEvents" :key="event.id">
           <vue-grid-item>
             <vue-card>
               <template slot="header">{{ event.title }}</template>
@@ -46,6 +94,8 @@
             </vue-card>
           </vue-grid-item>
         </vue-grid-row>
+
+        <storyline-view :events="events" v-show="view === 'storyline'" />
       </vue-grid>
 
       <vue-mobile-menu slot="sidebar">
@@ -113,6 +163,8 @@ import VueIconWord from '@components/icons/VueIconWord/VueIconWord.vue';
 import { ExportToDocx } from '@/app/story/Story/ExportToDocx';
 import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
 import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
+import VueAccordion from '@components/VueAccordion/VueAccordion.vue';
+import VueAccordionItem from '@components/VueAccordion/VueAccordionItem/VueAccordionItem.vue';
 
 export default {
   metaInfo() {
@@ -121,6 +173,8 @@ export default {
     };
   },
   components: {
+    VueAccordionItem,
+    VueAccordion,
     VueIconSuitCase,
     VueIconGlobe,
     VueIconWord,
@@ -159,6 +213,24 @@ export default {
       }
 
       return this.events;
+    },
+    chapters() {
+      const chapters: { name: string; events: IEvent[] }[] = [];
+      const findChapterIndex = (name: string) => chapters.findIndex((c) => c.name === name);
+
+      this.events.forEach((event: IEvent) => {
+        let chapterIndex: number = findChapterIndex(event.chapter.toString());
+
+        if (chapterIndex > -1) {
+          chapters[chapterIndex].events.push(event);
+        } else {
+          chapters.push({ name: event.chapter.toString(), events: [] });
+          chapterIndex = findChapterIndex(event.chapter.toString());
+          chapters[chapterIndex].events.push(event);
+        }
+      });
+
+      return chapters;
     },
   },
   data(): { story: IStory; events: IEvent[]; view: string } {

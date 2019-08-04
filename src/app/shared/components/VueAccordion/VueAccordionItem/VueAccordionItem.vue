@@ -71,6 +71,7 @@ export default {
 
 .vueAccordionItem {
   display: block;
+  margin-bottom: $space-16;
 }
 
 .header {
@@ -78,6 +79,7 @@ export default {
   box-shadow: $accordion-item-header-shadow;
   padding: $accordion-item-header-padding;
   border: $accordion-item-header-border;
+  border-radius: $brand-border-radius;
   position: relative;
   z-index: 1;
   cursor: pointer;
