@@ -154,7 +154,7 @@ import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
 import { IEvent } from '../IEvent';
 import VueInput from '../../shared/components/VueInput/VueInput.vue';
 import VueSelect from '../../shared/components/VueSelect/VueSelect.vue';
-import { createGUID } from '@shared/utils/misc';
+import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import VueAutocomplete from '../../shared/components/VueAutocomplete/VueAutocomplete.vue';
 import { ICharacter } from '../../character/ICharacter';
 import { IAutocompleteOption } from '@components/VueAutocomplete/IAutocompleteOption';
@@ -238,7 +238,7 @@ export default {
       const storyId: string = this.$route.params.storyId;
 
       if (this.event.id === null) {
-        this.event.id = createGUID();
+        this.event.id = getGUID();
         this.event.storyId = storyId;
         this.addEvent(this.event);
       } else {
@@ -249,14 +249,12 @@ export default {
     },
     getCharacters(query: string) {
       this.characters = this.allCharacters
-        .filter(
-          (character: ICharacter): boolean => {
-            return (
-              character.name.toLowerCase().indexOf(query.toLowerCase()) > -1 &&
-              this.event.characters.indexOf(character.id) === -1
-            );
-          },
-        )
+        .filter((character: ICharacter): boolean => {
+          return (
+            character.name.toLowerCase().indexOf(query.toLowerCase()) > -1 &&
+            this.event.characters.indexOf(character.id) === -1
+          );
+        })
         .map(
           (character: ICharacter): IAutocompleteOption => {
             return {

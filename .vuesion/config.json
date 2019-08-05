@@ -1,5 +1,5 @@
 {
-  "currentVersion": "v3.1.0",
+  "currentVersion": "v3.3.0",
   "generators": {
     "blueprintDirectory": "./.vuesion/generators",
     "outputDirectory": "./src/app",

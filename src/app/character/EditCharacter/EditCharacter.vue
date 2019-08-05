@@ -174,7 +174,7 @@ import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
 import { ICharacter } from '../ICharacter';
 import VueInput from '../../shared/components/VueInput/VueInput.vue';
 import VueSelect from '../../shared/components/VueSelect/VueSelect.vue';
-import { createGUID } from '@shared/utils/misc';
+import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import VueDatePicker from '../../shared/components/VueDatePicker/VueDatePicker.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
@@ -217,7 +217,7 @@ export default {
     ...mapActions('app', ['changeMenuPosition']),
     onSubmit() {
       if (this.character.id === null) {
-        this.character.id = createGUID();
+        this.character.id = getGUID();
         this.addCharacter(this.character);
       } else {
         this.updateCharacter(this.character);

@@ -85,7 +85,7 @@ import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueInput from '@components/VueInput/VueInput.vue';
 import VueTextarea from '@components/VueTextarea/VueTextarea.vue';
-import { createGUID } from '@shared/utils/misc';
+import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import { IItem } from '@/app/item/IItem';
 
 export default {
@@ -117,7 +117,7 @@ export default {
     ...mapActions('app', ['changeMenuPosition']),
     onSubmit() {
       if (this.item.id === null) {
-        this.item.id = createGUID();
+        this.item.id = getGUID();
         this.addItem(this.item);
       } else {
         this.updateItem(this.item);

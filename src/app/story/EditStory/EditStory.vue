@@ -75,7 +75,7 @@ import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
 import { IStory } from '../IStory';
 import VueInput from '../../shared/components/VueInput/VueInput.vue';
 import VueSelect from '../../shared/components/VueSelect/VueSelect.vue';
-import { createGUID } from '@shared/utils/misc';
+import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import VueTextarea from '../../shared/components/VueTextarea/VueTextarea.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
@@ -112,7 +112,7 @@ export default {
     ...mapActions('app', ['changeMenuPosition']),
     onSubmit() {
       if (this.story.id === null) {
-        this.story.id = createGUID();
+        this.story.id = getGUID();
         this.addStory(this.story);
       } else {
         this.updateStory(this.story);
