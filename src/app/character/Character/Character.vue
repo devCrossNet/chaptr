@@ -37,13 +37,18 @@
       </vue-grid>
 
       <vue-mobile-menu slot="sidebar">
-        <vue-button :aria-label="$t('common.back' /* Back */)" @click="$router.push(`/story/${currentStory}`)">
+        <vue-button
+          @click="$router.push(`/story/${currentStory}`)"
+          :aria-label="$t('common.back' /* Back */)"
+          :title="$t('common.back' /* Back */)"
+        >
           <vue-icon-arrow-left />
         </vue-button>
 
         <vue-button
-          :aria-label="$t('common.add.character' /* Add a new Character */)"
           @click="$router.push('/character/edit')"
+          :aria-label="$t('common.add.character' /* Add a new Character */)"
+          :title="$t('common.add.character' /* Add a new Character */)"
         >
           <vue-icon-add />
         </vue-button>
@@ -93,7 +98,7 @@ export default {
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition']),
-    getAge /* istanbul ignore next */(character: ICharacter) {
+    getAge(character: ICharacter) {
       const birthday = character.birthday ? new Date(character.birthday) : new Date();
       return new Date(Date.now() - birthday.getTime()).getUTCFullYear() - 1970;
     },

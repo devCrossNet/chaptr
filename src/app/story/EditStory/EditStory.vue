@@ -55,7 +55,11 @@
     </form>
 
     <vue-mobile-menu slot="sidebar">
-      <vue-button @click="$router.push('/')">
+      <vue-button
+        @click="$router.push('/')"
+        :aria-label="$t('common.back' /* Back */)"
+        :title="$t('common.back' /* Back */)"
+      >
         <vue-icon-arrow-left />
       </vue-button>
     </vue-mobile-menu>

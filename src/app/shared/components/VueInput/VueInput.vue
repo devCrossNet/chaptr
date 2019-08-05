@@ -231,7 +231,6 @@ export default {
   }
 
   .message {
-    display: inline-block;
     color: $input-error-color;
   }
 }

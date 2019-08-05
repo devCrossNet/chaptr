@@ -158,7 +158,7 @@
     </form>
 
     <vue-mobile-menu slot="sidebar">
-      <vue-button @click="goBack">
+      <vue-button @click="goBack" :aria-label="$t('common.back' /* Back */)" :title="$t('common.back' /* Back */)">
         <vue-icon-arrow-left />
       </vue-button>
     </vue-mobile-menu>

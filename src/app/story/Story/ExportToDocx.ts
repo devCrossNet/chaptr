@@ -19,11 +19,10 @@ marked.setOptions({
   xhtml: false,
 });
 
-/* istanbul ignore next */
 const getDocumentTitle = (story: IStory) => `# ${story.title}\n\n`;
-/* istanbul ignore next */
+
 const getAbstract = (story: IStory) => `## Abstract\n\n${story.abstract}\n\n`;
-/* istanbul ignore next */
+
 const getStory = (story: IStory, events: IEvent[], getCharacterById: any) => {
   let text = `## Story\n\n`;
 
@@ -37,7 +36,7 @@ const getStory = (story: IStory, events: IEvent[], getCharacterById: any) => {
 
   return text + '\n\n';
 };
-/* istanbul ignore next */
+
 const getCharacterList = (characters: ICharacter[]) => {
   let text = `## Characters\n\n`;
 
@@ -57,7 +56,7 @@ const getCharacterList = (characters: ICharacter[]) => {
 
   return text + '\n\n';
 };
-/* istanbul ignore next */
+
 const getPlaceList = (places: IPlace[]) => {
   let text = `## Places\n\n`;
 
@@ -70,7 +69,7 @@ const getPlaceList = (places: IPlace[]) => {
 
   return text + '\n\n';
 };
-/* istanbul ignore next */
+
 const getItemList = (items: IItem[]) => {
   let text = `## Items\n\n`;
 
@@ -84,7 +83,6 @@ const getItemList = (items: IItem[]) => {
   return text + '\n\n';
 };
 
-/* istanbul ignore next */
 export const ExportToDocx = (
   story: IStory,
   events: IEvent[],

@@ -1,7 +1,7 @@
 export interface IItem {
   id: string;
   name: string;
-  type: string;
-  location: string;
+  type?: string;
+  location?: string;
   notes?: string;
 }

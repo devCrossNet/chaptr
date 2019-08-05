@@ -8,129 +8,75 @@
           </vue-grid-item>
         </vue-grid-row>
 
-        <vue-grid-row v-show="view === 'print'">
-          <vue-grid-item>
-            <vue-accordion multiple>
-              <vue-accordion-item
-                initOpen
-                :title="`Chapter: ${chapter.name}`"
-                v-for="chapter in chapters"
-                :key="chapter.name"
-              >
-                <vue-grid-row v-for="event in chapter.events" :key="event.id">
-                  <vue-grid-item>
-                    <vue-card>
-                      <template slot="header">{{ event.title }}</template>
+        <print-view :chapters="chapters" :get-character-by-id="getCharacterById" v-show="view === 'print'" />
 
-                      <div v-show="event.notes && event.notes !== ''">
-                        <vue-grid-row>
-                          <vue-grid-item :class="$style.characters">
-                            <label>{{ $t('common.characters' /* Characters */) }}</label>
-                            <ul>
-                              <li v-for="characterId in event.characters" :key="characterId">
-                                {{ getCharacterById(characterId).name }}
-                              </li>
-                            </ul>
-                          </vue-grid-item>
-
-                          <vue-grid-item>
-                            <label>{{ $t('common.notes' /* Notes */) }}</label>
-                            <vue-markdown>
-                              {{ event.notes }}
-                            </vue-markdown>
-                          </vue-grid-item>
-                        </vue-grid-row>
-                      </div>
-
-                      <vue-button
-                        slot="footer"
-                        color="secondary"
-                        as="router-link"
-                        :target="`/event/edit/${$route.params.id}/${event.id}`"
-                      >
-                        <vue-icon-pencil />
-                      </vue-button>
-                    </vue-card>
-                  </vue-grid-item>
-                </vue-grid-row>
-              </vue-accordion-item>
-            </vue-accordion>
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row v-show="view === 'time'" v-for="event in orderedEvents" :key="event.id">
-          <vue-grid-item>
-            <vue-card>
-              <template slot="header">{{ event.title }}</template>
-
-              <div v-show="event.notes && event.notes !== ''">
-                <vue-grid-row>
-                  <vue-grid-item :class="$style.characters">
-                    <label>{{ $t('common.characters' /* Characters */) }}</label>
-                    <ul>
-                      <li v-for="characterId in event.characters" :key="characterId">
-                        {{ getCharacterById(characterId).name }}
-                      </li>
-                    </ul>
-                  </vue-grid-item>
-
-                  <vue-grid-item>
-                    <label>{{ $t('common.notes' /* Notes */) }}</label>
-                    <vue-markdown>
-                      {{ event.notes }}
-                    </vue-markdown>
-                  </vue-grid-item>
-                </vue-grid-row>
-              </div>
-
-              <vue-button
-                slot="footer"
-                color="secondary"
-                as="router-link"
-                :target="`/event/edit/${$route.params.id}/${event.id}`"
-              >
-                <vue-icon-pencil />
-              </vue-button>
-            </vue-card>
-          </vue-grid-item>
-        </vue-grid-row>
+        <chronological-view :events="orderedEvents" :get-character-by-id="getCharacterById" v-show="view === 'time'" />
 
         <storyline-view :events="events" v-show="view === 'storyline'" />
       </vue-grid>
 
       <vue-mobile-menu slot="sidebar">
-        <vue-button warn :aria-label="$t('common.back' /* Back */)" @click="$router.push('/')">
+        <vue-button
+          warn
+          @click="$router.push('/')"
+          :aria-label="$t('common.back' /* Back */)"
+          :title="$t('common.back' /* Back */)"
+        >
           <vue-icon-arrow-left />
         </vue-button>
         <vue-button
           primary
-          :aria-label="$t('common.add.character' /* Add a new Character */)"
           @click="$router.push('/character')"
+          :aria-label="$t('common.add.character' /* Add a new Character */)"
+          :title="$t('common.add.character' /* Add a new Character */)"
         >
           <vue-icon-user />
         </vue-button>
-        <vue-button primary :aria-label="$t('common.add.place' /* Add a new Place */)" @click="$router.push('/place')">
+        <vue-button
+          primary
+          @click="$router.push('/place')"
+          :aria-label="$t('common.add.place' /* Add a new Place */)"
+          :title="$t('common.add.place' /* Add a new Place */)"
+        >
           <vue-icon-globe />
         </vue-button>
-        <vue-button primary :aria-label="$t('common.add.item' /* Add a new Item */)" @click="$router.push('/item')">
+        <vue-button
+          primary
+          @click="$router.push('/item')"
+          :aria-label="$t('common.add.item' /* Add a new Item */)"
+          :title="$t('common.add.item' /* Add a new Item */)"
+        >
           <vue-icon-suit-case />
         </vue-button>
         <vue-button
           accent
-          :aria-label="$t('common.add.event' /* Add a new Event */)"
           @click="$router.push(`/event/edit/${story.id}`)"
+          :aria-label="$t('common.add.event' /* Add a new Event */)"
+          :title="$t('common.add.event' /* Add a new Event */)"
         >
           <vue-icon-calendar />
         </vue-button>
-        <vue-button :aria-label="$t('common.edit' /* Edit */)" @click="$router.push(`/story/edit/${story.id}`)">
+        <vue-button
+          @click="$router.push(`/story/edit/${story.id}`)"
+          :aria-label="$t('common.edit' /* Edit */)"
+          :title="$t('common.edit' /* Edit */)"
+        >
           <vue-icon-pencil />
         </vue-button>
-        <vue-button :aria-label="$t('common.changeView' /* Change View */)" @click="changeView">
+        <vue-button
+          @click="changeView"
+          :aria-label="$t('common.changeView' /* Change View */)"
+          :title="$t('common.changeView' /* Change View */)"
+        >
           <vue-icon-book v-if="view === 'time'" />
           <vue-icon-bar-chart v-if="view === 'print'" />
           <vue-icon-clock v-if="view === 'storyline'" />
         </vue-button>
-        <vue-button @click="exportToDocx" :aria-label="$t('common.share.exportToDocx' /* Export to Word */)">
+        <vue-button
+          @click="exportToDocx"
+          :aria-label="$t('common.share.exportToDocx' /* Export to Word */)"
+          :title="$t('common.share.exportToDocx' /* Export to Word */)"
+        >
           <vue-icon-word />
         </vue-button>
       </vue-mobile-menu>
@@ -139,32 +85,30 @@
 </template>
 
 <script lang="ts">
-import VueGrid from '../../shared/components/VueGrid/VueGrid.vue';
-import VueGridItem from '../../shared/components/VueGridItem/VueGridItem.vue';
-import VueButton from '../../shared/components/VueButton/VueButton.vue';
-import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
 import { IStory } from '../IStory';
-import VueMobileMenu from '../../shared/components/VueMobileMenu/VueMobileMenu.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { IEvent } from '../../event/IEvent';
-import VueCard from '../../shared/components/VueCard/VueCard.vue';
-import StorylineView from '../StorylineView/StorylineView.vue';
-import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
+import { ExportToDocx } from '@/app/story/Story/ExportToDocx';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
+import VueGrid from '@components/VueGrid/VueGrid.vue';
+import VueGridRow from '@components/VueGridRow/VueGridRow.vue';
+import VueGridItem from '@components/VueGridItem/VueGridItem.vue';
+import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
+import PrintView from '@/app/story/PrintView/PrintView.vue';
+import ChronologicalView from '@/app/story/ChronologicalView/ChronologicalView.vue';
+import StorylineView from '@/app/story/StorylineView/StorylineView.vue';
+import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
+import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueIconUser from '@components/icons/VueIconUser/VueIconUser.vue';
+import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
+import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
 import VueIconCalendar from '@components/icons/VueIconCalendar/VueIconCalendar.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueIconBarChart from '@components/icons/VueIconBarChart/VueIconBarChart.vue';
 import VueIconClock from '@components/icons/VueIconClock/VueIconClock.vue';
-import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 import VueIconWord from '@components/icons/VueIconWord/VueIconWord.vue';
-import { ExportToDocx } from '@/app/story/Story/ExportToDocx';
-import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
-import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
-import VueAccordion from '@components/VueAccordion/VueAccordion.vue';
-import VueAccordionItem from '@components/VueAccordion/VueAccordionItem/VueAccordionItem.vue';
 
 export default {
   metaInfo() {
@@ -173,28 +117,26 @@ export default {
     };
   },
   components: {
-    VueAccordionItem,
-    VueAccordion,
-    VueIconSuitCase,
-    VueIconGlobe,
     VueIconWord,
-    VueMarkdown,
     VueIconClock,
     VueIconBarChart,
     VueIconBook,
     VueIconPencil,
     VueIconCalendar,
+    VueIconSuitCase,
+    VueIconGlobe,
     VueIconUser,
     VueIconArrowLeft,
-    VueLayout,
-    VueHeadline,
-    StorylineView,
-    VueCard,
-    VueMobileMenu,
-    VueGrid,
-    VueGridItem,
     VueButton,
+    VueMobileMenu,
+    StorylineView,
+    ChronologicalView,
+    PrintView,
+    VueHeadline,
+    VueGridItem,
     VueGridRow,
+    VueGrid,
+    VueLayout,
   },
   computed: {
     ...mapGetters('story', ['getStoryById']),
@@ -257,7 +199,7 @@ export default {
         this.view = 'print';
       }
     },
-    exportToDocx /* istanbul ignore next */() {
+    exportToDocx() {
       ExportToDocx(this.story, this.events, this.getCharacterById, this.allCharacters, this.allPlaces, this.allItems);
     },
   },
@@ -274,15 +216,5 @@ export default {
 @import '../../shared/design-system';
 
 .story {
-  label {
-    display: block;
-    font-family: $font-family-headings;
-    font-weight: $font-weight-bold;
-    margin: $space-8 0;
-  }
-
-  .characters {
-    flex: 0 1 25%;
-  }
 }
 </style>

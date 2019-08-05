@@ -45,11 +45,19 @@
       </vue-grid>
 
       <vue-mobile-menu slot="sidebar">
-        <vue-button :aria-label="$t('common.back' /* Back */)" @click="$router.push(`/story/${currentStory}`)">
+        <vue-button
+          @click="$router.push(`/story/${currentStory}`)"
+          :aria-label="$t('common.back' /* Back */)"
+          :title="$t('common.back' /* Back */)"
+        >
           <vue-icon-arrow-left />
         </vue-button>
 
-        <vue-button :aria-label="$t('common.add.place' /* Add a new Place */)" @click="$router.push('/place/edit')">
+        <vue-button
+          @click="$router.push('/place/edit')"
+          :aria-label="$t('common.add.place' /* Add a new Place */)"
+          :title="$t('common.add.place' /* Add a new Place */)"
+        >
           <vue-icon-add />
         </vue-button>
       </vue-mobile-menu>

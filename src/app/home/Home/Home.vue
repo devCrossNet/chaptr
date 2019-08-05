@@ -3,128 +3,92 @@
     <input type="file" ref="fileupload" :style="{ display: 'none' }" />
 
     <vue-layout @position="changeMenuPosition" :position="menuPosition">
-      <vue-grid>
-        <vue-grid-row v-show="hasStories === true">
-          <vue-grid-item fill>
-            <vue-headline level="1">{{ $t('common.yourStories' /* Your Stories */) }}</vue-headline>
-          </vue-grid-item>
-
-          <vue-grid-item v-for="story in allStories" :key="story.id" :class="$style.item">
-            <vue-card :class="$style.card">
-              <template slot="header">{{ story.title }}</template>
-
-              <vue-markdown>
-                {{ story.abstract }}
-              </vue-markdown>
-
-              <vue-button slot="footer" color="secondary" as="router-link" :target="`/story/${story.id}`">
-                <vue-icon-pencil />
-              </vue-button>
-            </vue-card>
-          </vue-grid-item>
-        </vue-grid-row>
-      </vue-grid>
+      <story-list :stories="allStories" />
 
       <vue-mobile-menu slot="sidebar">
-        <vue-button @click="addStory" :aria-label="$t('common.add.story' /* Add a new Story */)">
+        <vue-button
+          @click="$router.push('/story/edit')"
+          :aria-label="$t('common.add.story' /* Add a new Story */)"
+          :title="$t('common.add.story' /* Add a new Story */)"
+        >
           <vue-icon-add />
         </vue-button>
-        <vue-button @click="saveState" :aria-label="$t('common.save.State' /* Save current State */)">
+        <vue-button
+          @click="saveState"
+          :aria-label="$t('common.save.State' /* Save current State */)"
+          :title="$t('common.save.State' /* Save current State */)"
+        >
           <vue-icon-save />
         </vue-button>
-        <vue-button @click="loadState" :aria-label="$t('common.load.State' /* Load current State */)">
+        <vue-button
+          @click="loadState"
+          :aria-label="$t('common.load.State' /* Load current State */)"
+          :title="$t('common.load.State' /* Load current State */)"
+        >
           <vue-icon-upload />
         </vue-button>
-        <vue-button @click="shareState" :aria-label="$t('common.share.State' /* Share current State */)">
+        <vue-button
+          @click="shareState"
+          :aria-label="$t('common.share.State' /* Share current State */)"
+          :title="$t('common.share.State' /* Share current State */)"
+        >
           <vue-icon-share />
         </vue-button>
-        <vue-button @click="show = true" :aria-label="$t('common.share.EnterCode' /* Enter Code */)">
+        <vue-button
+          @click="show = true"
+          :aria-label="$t('common.share.EnterCode' /* Enter Code */)"
+          :title="$t('common.share.EnterCode' /* Enter Code */)"
+        >
           <vue-icon-keyboard />
         </vue-button>
       </vue-mobile-menu>
     </vue-layout>
 
-    <vue-modal :show="show">
-      <vue-headline level="3">{{ $t('common.share.EnterCode' /* Enter Code */) }}</vue-headline>
-      <vue-input name="code" id="code" placeholder="code" v-model="code" autofocus />
-      <vue-button
-        color="primary"
-        :aria-label="$t('common.restore' /* Restore Stories */)"
-        @click="loadStateFromServer()"
-        :disabled="code.length > 6"
-      >
-        {{ $t('common.restore' /* Restore Stories */) }}
-      </vue-button>
-      <vue-button ghost :aria-label="$t('common.cancel' /* Cancel */)" @click="show = false">
-        {{ $t('common.cancel' /* Cancel */) }}
-      </vue-button>
-    </vue-modal>
+    <enter-code-modal :show="show" @submit="loadStateFromServer" />
   </div>
 </template>
 
 <script lang="ts">
 import { saveAs } from 'file-saver';
 import { mapActions, mapGetters } from 'vuex';
-import VueGrid from '../../shared/components/VueGrid/VueGrid.vue';
-import VueGridRow from '../../shared/components/VueGridRow/VueGridRow.vue';
-import VueGridItem from '../../shared/components/VueGridItem/VueGridItem.vue';
-import VueButton from '../../shared/components/VueButton/VueButton.vue';
-import VueMobileMenu from '../../shared/components/VueMobileMenu/VueMobileMenu.vue';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
 import { IState } from '../../state';
 import { HttpService } from '@shared/services/HttpService/HttpService';
 import { addNotification } from '@components/VueNotificationStack/utils';
-import VueModal from '../../shared/components/VueModal/VueModal.vue';
-import VueInput from '../../shared/components/VueInput/VueInput.vue';
-import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
-import VueCard from '@components/VueCard/VueCard.vue';
-import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
+import StoryList from '@/app/home/StoryList/StoryList.vue';
+import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
+import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
 import VueIconSave from '@components/icons/VueIconSave/VueIconSave.vue';
 import VueIconUpload from '@components/icons/VueIconUpload/VueIconUpload.vue';
 import VueIconShare from '@components/icons/VueIconShare/VueIconShare.vue';
 import VueIconKeyboard from '@components/icons/VueIconKeyboard/VueIconKeyboard.vue';
-import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
-import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
+import EnterCodeModal from '@/app/home/EnterCodeModal/EnterCodeModal.vue';
 
 export default {
   metaInfo: {
     title: 'Chaptr',
   },
   components: {
-    VueMarkdown,
-    VueIconPencil,
+    EnterCodeModal,
     VueIconKeyboard,
     VueIconShare,
     VueIconUpload,
     VueIconSave,
     VueIconAdd,
-    VueLayout,
-    VueIconBook,
-    VueCard,
-    VueHeadline,
-    VueInput,
-    VueModal,
-    VueMobileMenu,
     VueButton,
-    VueGridItem,
-    VueGridRow,
-    VueGrid,
+    VueMobileMenu,
+    StoryList,
+    VueLayout,
   },
   computed: {
     ...mapGetters('story', ['allStories']),
     ...mapGetters('app', ['menuPosition']),
-    hasStories() {
-      return this.allStories.length > 0;
-    },
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition', 'changeLocale']),
-    addStory() {
-      this.$router.push('/story/edit');
-    },
     replaceState(newState: IState) {
       const oldState: IState = cloneDeep(this.$store.state);
       this.$store.replaceState(merge(oldState, newState));
@@ -156,36 +120,42 @@ export default {
         fileReader.readAsText(files.item(0));
       });
     },
-    shareState() {
-      HttpService.post('/upload', this.$store.state).then((res: any) => {
+    async shareState() {
+      try {
+        const res = await HttpService.post('/upload', this.$store.state);
+
         addNotification({
           title: 'Here is your code!',
           text: 'Enter the following code on the target device: ' + res.data.code,
         });
-      });
-    },
-    loadStateFromServer() {
-      HttpService.get(`/share/${this.code}`)
-        .then((res: any) => {
-          this.replaceState(res.data.content);
-          addNotification({
-            title: 'Stories restored!',
-            text: 'Your stories are now transferred',
-          });
-          this.show = false;
-        })
-        .catch(() => {
-          addNotification({
-            title: 'Code is not valid!',
-            text: 'Stories can not be restored, please try again.',
-          });
+      } catch (e) {
+        addNotification({
+          title: 'Something went wrong!',
+          text: 'Please try again!',
         });
+      }
+    },
+    async loadStateFromServer(code: string) {
+      console.log(code);
+      try {
+        const res = await HttpService.get(`/share/${code}`);
+        this.replaceState(res.data.content);
+        addNotification({
+          title: 'Stories restored!',
+          text: 'Your stories are now transferred',
+        });
+        this.show = false;
+      } catch (e) {
+        addNotification({
+          title: 'Code is not valid!',
+          text: 'Stories can not be restored, please try again.',
+        });
+      }
     },
   },
   data() {
     return {
       show: false,
-      code: '',
     };
   },
 };
@@ -194,13 +164,5 @@ export default {
 <style lang="scss" module>
 @import '../../shared/design-system';
 .home {
-  .item {
-    flex: 1 1 50%;
-    display: flex;
-  }
-
-  .card {
-    flex: 1 1 50%;
-  }
 }
 </style>
