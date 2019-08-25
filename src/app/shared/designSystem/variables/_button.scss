@@ -1,17 +1,17 @@
 $button-font-family: $font-family;
-$button-padding: $space-2 $space-12;
+$button-padding: $space-8 $space-12;
 $button-margin: 0 $space-8 0 0;
 $button-min-width: $space-32;
-$button-height: $space-32;
+$button-height: auto;
 $button-font-size: $font-size;
-$button-font-weight: $font-weight-regular;
+$button-font-weight: 400;
 $button-border-radius: $brand-border-radius;
 $button-shadow: none;
 $button-transition: all 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
 $button-active-shadow: 0 12px 20px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.18);
 $button-text-decoration: none;
 $button-hover-text-decoration: none;
-$button-text-transform: none;
+$button-text-transform: uppercase;
 $button-disabled-opacity: 0.7;
 
 $button-outlined-border-width: 0.2rem;

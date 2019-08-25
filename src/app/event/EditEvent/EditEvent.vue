@@ -44,9 +44,10 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <label>{{ $t('common.storyline' /* Storyline */) }}</label>
             <vue-select
+              :placeholder="$t('common.storyline' /* Storyline */)"
               required
+              validation="required"
               name="storyline"
               id="storyline"
               :value="event.storyline.toString()"
@@ -58,9 +59,10 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <label>{{ $t('common.chapter' /* Chapter */) }}</label>
             <vue-select
+              :placeholder="$t('common.chapter' /* Chapter */)"
               required
+              validation="required"
               name="chapter"
               id="chapter"
               :value="event.chapter.toString()"
@@ -72,9 +74,10 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <label>{{ $t('common.storylineOrder' /* Order */) }}</label>
             <vue-select
+              :placeholder="$t('common.storylineOrder' /* Storyline Order */)"
               required
+              validation="required"
               name="storylineOrder"
               id="storylineOrder"
               :value="event.storylineOrder.toString()"
@@ -265,22 +268,16 @@ export default {
         );
     },
     fillChapters() {
-      this.chapters.push({ label: this.$t('common.choose.chapter' /* Choose a Chapter */), value: '0' });
       for (let i = 1; i <= 99; i++) {
         this.chapters.push({ label: i.toString(), value: i.toString() });
       }
     },
     fillStoryLines() {
-      this.storylines.push({ label: this.$t('common.choose.storyline' /* Choose a Storyline */), value: '0' });
       for (let i = 1; i <= 20; i++) {
         this.storylines.push({ label: i.toString(), value: i.toString() });
       }
     },
     fillStoryLineOrders(storyEvents: IEvent[]) {
-      this.storylineOrders.push({
-        label: this.$t('common.choose.storylineOrder' /* Choose Storyline Order */),
-        value: '-1',
-      });
       for (let i = 0; i < storyEvents.length; i++) {
         this.storylineOrders.push({ label: `${i + 1} - ${storyEvents[i].title}`, value: i.toString() });
       }

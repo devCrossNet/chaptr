@@ -17,6 +17,7 @@
       v-on="handlers"
       ref="input"
     />
+    <span :class="$style.bar"></span>
     <label :for="name"> {{ placeholder }}<sup v-if="required">*</sup> </label>
     <div :class="$style.message">{{ messageOrError }}</div>
   </div>
@@ -88,7 +89,7 @@ export default {
     cssClasses() {
       const classes = [this.$style.vueInput];
 
-      if (this.disabled || this.readonly) {
+      if (this.disabled) {
         classes.push(this.$style.disabled);
       }
 
@@ -151,16 +152,10 @@ export default {
   input:hover {
     outline: none !important;
   }
-  input:focus {
-    border: $input-border-focus;
-  }
-  input.hasValue {
-    border: $input-border-dirty;
-  }
   input {
     background-color: $input-background-color;
-    border: $input-border;
-    border-radius: $input-border-radius;
+    border: none;
+    border-bottom: $input-border-bottom;
     padding: $input-padding;
     display: block;
     width: 100%;
@@ -169,31 +164,19 @@ export default {
     font-weight: $input-font-weight;
     color: $input-color;
     height: $input-height;
-    transition: $brand-transition-duration ease all;
+    border-radius: 0;
   }
-  input:focus ~ label {
-    top: 0;
-    font-size: $input-placeholder-active-font-size;
-    margin-top: -$space-16 + $space-2;
-    background-color: $brand-bg-color;
-    color: $input-placeholder-active-font-color;
-    height: auto;
-
-    sup {
-      visibility: hidden;
-    }
-  }
+  input:focus ~ label,
   input.hasValue ~ label {
-    top: 0;
+    top: -$space-20;
     font-size: $input-placeholder-active-font-size;
-    margin-top: -$space-16 + $space-2;
-    background-color: $brand-bg-color;
-    color: $input-placeholder-dirty-font-color;
-    height: auto;
-
-    sup {
-      visibility: hidden;
-    }
+    font-weight: $input-placeholder-active-font-weight;
+    color: $input-placeholder-active-font-color;
+    height: $input-placeholder-active-height;
+  }
+  input:focus ~ .bar:before,
+  input:focus ~ .bar:after {
+    width: 50%;
   }
 
   label {
@@ -203,16 +186,7 @@ export default {
     position: absolute;
     pointer-events: none;
     top: $input-placeholder-top;
-    left: $input-padding;
-    transition: $brand-transition-duration ease all;
-    padding: 0 $space-4;
-    display: block;
-    height: $space-32;
-
-    sup {
-      position: absolute;
-      top: -$space-2;
-    }
+    transition: 0.2s ease all;
   }
 }
 
@@ -220,18 +194,46 @@ export default {
   label {
     color: $input-error-color;
   }
-  input,
-  input:focus,
-  input.hasValue {
-    border: 1px solid $input-error-color;
+  input {
+    border-bottom-color: $input-error-color;
   }
   input:focus ~ label,
   input.hasValue ~ label {
     color: $input-error-color;
   }
 
+  .bar {
+    &:before,
+    &:after {
+      background: $input-error-color;
+    }
+  }
+
   .message {
     color: $input-error-color;
+  }
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  &:before,
+  &:after {
+    content: '';
+    height: $input-bar-height;
+    width: 0;
+    bottom: 0;
+    position: absolute;
+    background: $input-bar-color;
+    transition: all 0.2s ease-in-out;
+  }
+  &:before {
+    left: 50%;
+  }
+  &:after {
+    right: 50%;
   }
 }
 

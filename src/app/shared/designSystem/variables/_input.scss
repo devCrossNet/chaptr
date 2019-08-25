@@ -1,27 +1,21 @@
-$input-border: 1px solid $brand-border-color;
-$input-border-focus: 1px solid $brand-secondary;
-$input-border-dirty: 1px solid $brand-success;
-$input-border-radius: $brand-border-radius;
-$input-background-color: $brand-bg-color;
-$input-padding: $space-8;
+$input-border-bottom: 1px solid $brand-border-color;
+$input-background-color: transparent;
+$input-padding: $space-8 0;
 $input-margin: 0 0 $space-20 0;
 $input-font-family: $font-family;
 $input-font-size: inherit;
 $input-font-weight: $font-weight-light;
 $input-color: $brand-text-color;
-$input-height: $space-32;
+$input-height: auto;
 $input-error-color: $brand-danger;
 
-$input-placeholder-top: $space-4;
+$input-placeholder-top: 0;
 $input-placeholder-color: $input-color;
 $input-placeholder-font-size: $input-font-size;
 $input-placeholder-font-weight: $font-weight-light;
-$input-placeholder-active-font-size: 73%;
-$input-placeholder-active-font-color: $brand-secondary;
-$input-placeholder-dirty-font-color: $brand-success;
-
-// delete
+$input-placeholder-active-font-size: 75%;
 $input-placeholder-active-font-weight: $font-weight-regular;
+$input-placeholder-active-font-color: $brand-secondary;
 $input-placeholder-active-height: $space-12;
 
 $input-bar-height: 2px;
@@ -31,4 +25,4 @@ $input-message-height: $space-20;
 $input-message-padding: 0;
 $input-message-color: $input-color;
 $input-message-font-size: 75%;
-$input-message-font-weight: $font-weight-light;
+$input-message-font-weight: $font-weight-regular;

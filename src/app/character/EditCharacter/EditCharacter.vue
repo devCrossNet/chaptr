@@ -47,7 +47,6 @@
                   name="address"
                   id="address"
                   :placeholder="$t('common.address' /* Address */)"
-                  validation="required"
                   v-model="character.address"
                 />
               </vue-grid-item>

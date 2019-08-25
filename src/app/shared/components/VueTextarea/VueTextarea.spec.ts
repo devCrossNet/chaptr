@@ -1,11 +1,11 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import VueTextArea from './VueTextArea.vue';
+import VueTextarea from './VueTextarea.vue';
 
 const localVue = createLocalVue();
 
-xdescribe('VueTextArea.vue', () => {
+describe('VueTextarea.vue', () => {
   test('renders component', () => {
-    const wrapper = mount<any>(VueTextArea, {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       propsData: {
         message: 'MESSAGE!',
@@ -22,7 +22,7 @@ xdescribe('VueTextArea.vue', () => {
   });
 
   test('renders disabled component', () => {
-    const wrapper = mount<any>(VueTextArea, {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       propsData: {
         disabled: true,
@@ -34,8 +34,8 @@ xdescribe('VueTextArea.vue', () => {
     expect(wrapper.findAll(`.disabled`)).toHaveLength(1);
   });
 
-  test('should emit textarea', () => {
-    const wrapper = mount<any>(VueTextArea, {
+  test('should emit input', () => {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       propsData: {
         name: 'name',
@@ -48,7 +48,7 @@ xdescribe('VueTextArea.vue', () => {
   });
 
   test('should display error state', () => {
-    const wrapper = mount<any>(VueTextArea, {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       mocks: {
         errors: {
@@ -69,7 +69,7 @@ xdescribe('VueTextArea.vue', () => {
   });
 
   test('autofocus fallback', () => {
-    const wrapper = mount<any>(VueTextArea, {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       propsData: {
         name: 'name',
@@ -95,7 +95,7 @@ xdescribe('VueTextArea.vue', () => {
         this.cb();
       }
     };
-    const wrapper = mount<any>(VueTextArea, {
+    const wrapper = mount<any>(VueTextarea, {
       localVue,
       propsData: {
         name: 'name',
