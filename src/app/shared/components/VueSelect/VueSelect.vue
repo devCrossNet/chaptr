@@ -100,7 +100,7 @@ export default {
         classes.push(this.$style.error);
       }
 
-      if (this.value.length > 0 && parseInt(this.value, 10) > 0) {
+      if (this.value) {
         classes.push(this.$style.hasValue);
       }
 

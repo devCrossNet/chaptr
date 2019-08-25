@@ -26,3 +26,9 @@ $input-message-padding: 0;
 $input-message-color: $input-color;
 $input-message-font-size: 75%;
 $input-message-font-weight: $font-weight-regular;
+
+$input-border-focus: 1px solid $brand-secondary;
+$input-border-dirty: 1px solid $brand-secondary;
+$input-border-radius: $brand-border-radius;
+$input-placeholder-active-font-color: $brand-secondary;
+$input-placeholder-dirty-font-color: $brand-secondary;

@@ -1,36 +1,20 @@
 <template>
-  <div :class="cssClasses">
-    <textarea
-      v-validate="validation"
-      :data-vv-as="placeholder"
-      :name="name"
-      :id="id"
-      :required="required"
-      :value="value"
-      :disabled="disabled"
-      :readonly="readonly"
-      :class="[value ? $style.hasValue : '']"
-      :autofocus="autofocus"
-      v-bind="$attrs"
-      v-on="handlers"
-      ref="input"
-    ></textarea>
-    <span :class="$style.bar"></span> <label :for="name"> {{ placeholder }}<sup v-if="required">*</sup> </label>
-    <div :class="$style.message">{{ messageOrError }}</div>
+  <div :class="$style.vueTextarea">
+    <label :for="name"> {{ placeholder }}</label>
+    <textarea :name="name" :id="id" :value="value" ref="input"></textarea>
   </div>
 </template>
 
 <script lang="ts">
-import { Validator } from 'vee-validate';
+import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
+import VueTruncate from '@components/VueTruncate/VueTruncate.vue';
+/* istanbul ignore next */
+const SimpleMDE = CLIENT ? require('simplemde') : null;
 
 export default {
   name: 'VueTextarea',
+  components: { VueTruncate, VueMarkdown },
   inheritAttrs: false,
-  inject: {
-    $validator: {
-      default: new Validator({}, {}),
-    },
-  },
   props: {
     name: {
       type: String,
@@ -43,87 +27,25 @@ export default {
     placeholder: {
       type: String,
     },
-    required: {
-      type: Boolean,
-    },
-    autofocus: {
-      type: Boolean,
-    },
     value: {
       type: String,
     },
-    disabled: {
-      type: Boolean,
-    },
-    readonly: {
-      type: Boolean,
-    },
-    message: {
-      type: String,
-    },
-    errorMessage: {
-      type: String,
-    },
-    validation: {
-      type: String,
-    },
   },
-  computed: {
-    isValid() {
-      return this.errors ? this.errors.first(this.name) === null : true;
-    },
-    messageOrError() {
-      return this.isValid ? this.message : this.errorMessage;
-    },
-    cssClasses() {
-      const classes = [this.$style.vueTextarea];
-
-      if (this.disabled) {
-        classes.push(this.$style.disabled);
-      }
-
-      if (!this.isValid) {
-        classes.push(this.$style.error);
-      }
-
-      return classes;
-    },
-    handlers() {
-      delete this.$listeners.input;
-
-      return {
-        ...this.$listeners,
-        input: (e: any) => {
-          this.$emit('input', e.target.value);
-        },
-      };
-    },
-  },
+  computed: {},
   data(): any {
     return {
-      observer: null,
+      editor: null,
     };
   },
-  methods: {
-    handleObserver() {
-      this.observer = new IntersectionObserver(
-        () => {
-          if (this.autofocus && this.$refs.input) {
-            this.$refs.input.focus();
-          }
-        },
-        { root: this.$refs.input.parentElement, threshold: 1 },
-      );
-      this.observer.observe(this.$refs.input);
-    },
-  },
-  mounted() {
-    if ((window as any).IntersectionObserver) {
-      this.handleObserver();
+  methods: {},
+  mounted /* istanbul ignore next */() {
+    if (CLIENT) {
+      this.editor = new SimpleMDE({ element: this.$refs.input, spellChecker: false });
+      this.editor.codemirror.on('change', () => {
+        this.$emit('input', this.editor.value());
+      });
+      setTimeout(() => this.editor.value(this.value), 10);
     }
-  },
-  beforeDestroy() {
-    this.observer = null;
   },
 };
 </script>
@@ -133,110 +55,150 @@ export default {
 
 .vueTextarea {
   position: relative;
-  margin: $input-margin;
-
-  textarea,
-  textarea:active,
-  textarea:focus,
-  textarea:hover {
-    outline: none !important;
-  }
-  textarea {
-    background-color: $input-background-color;
-    border: none;
-    border-bottom: $input-border-bottom;
-    padding: $input-padding;
-    display: block;
-    width: 100%;
-    font-family: $input-font-family;
-    font-size: $input-font-size;
-    font-weight: $input-font-weight;
-    color: $input-color;
-    height: $input-height + $space-4;
-    border-radius: 0;
-  }
-  textarea:focus ~ label,
-  textarea.hasValue ~ label {
-    top: -$space-20;
-    font-size: $input-placeholder-active-font-size;
-    font-weight: $input-placeholder-active-font-weight;
-    color: $input-placeholder-active-font-color;
-    height: $input-placeholder-active-height;
-  }
-  textarea:focus ~ .bar:before,
-  textarea:focus ~ .bar:after {
-    width: 50%;
-  }
 
   label {
-    color: $input-placeholder-color;
-    font-size: $input-placeholder-font-size;
-    font-weight: $input-placeholder-font-weight;
     position: absolute;
-    pointer-events: none;
-    top: $input-placeholder-top;
-    transition: 0.2s ease all;
-  }
-}
-
-.error {
-  label {
-    color: $input-error-color;
-  }
-  textarea {
-    border-bottom-color: $input-error-color;
-  }
-  textarea:focus ~ label,
-  textarea.hasValue ~ label {
-    color: $input-error-color;
+    top: 0;
+    left: $input-padding;
+    font-size: $input-placeholder-active-font-size;
+    margin-top: -$space-16 + $space-2;
+    background-color: $brand-bg-color;
+    color: $input-placeholder-dirty-font-color;
+    height: auto;
+    z-index: 2;
+    padding: 0 $space-4;
+    display: block;
   }
 
-  .bar {
-    &:before,
-    &:after {
-      background: $input-error-color;
+  :global {
+    .CodeMirror-cursor {
+      border-color: $brand-text-color;
+      margin: 0 1px;
+      height: $font-size;
+    }
+
+    .CodeMirror-selectedtext {
+      background: palette-color-level('grey', 70);
+      padding: $space-4 0;
+    }
+
+    .editor-toolbar {
+      background: $brand-bg-color;
+      border-top: $input-border-dirty;
+      border-left: $input-border-dirty;
+      border-right: $input-border-dirty;
+      border-top-left-radius: $input-border-radius;
+      border-top-right-radius: $input-border-radius;
+      opacity: 1;
+    }
+
+    .editor-toolbar a {
+      color: $brand-text-color !important;
+      &:hover,
+      &.active {
+        background: $brand-bg-color !important;
+        border: 1px solid $brand-bg-color !important;
+      }
+      &.active {
+        color: $brand-secondary !important;
+      }
+    }
+
+    .editor-toolbar.disabled-for-preview a:not(.no-disable) {
+      background: $brand-bg-color !important;
+      border: 1px solid $brand-bg-color !important;
+      opacity: 0.2;
+    }
+
+    .CodeMirror,
+    .editor-preview,
+    .editor-preview-side {
+      background: $brand-bg-color;
+      color: $brand-text-color;
+      border: $input-border-dirty;
+      border-bottom-left-radius: $input-border-radius;
+      border-bottom-right-radius: $input-border-radius;
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: $font-family-headings;
+        margin: $space-16 0 $space-4 0;
+      }
+
+      h1 {
+        font-size: $font-size-h1;
+        font-weight: $font-weight-h1;
+        letter-spacing: $letter-spacing-h1;
+        line-height: $line-height-h1;
+      }
+
+      h2 {
+        font-size: $font-size-h2;
+        font-weight: $font-weight-h2;
+        letter-spacing: $letter-spacing-h2;
+        line-height: $line-height-h2;
+      }
+
+      h3 {
+        font-size: $font-size-h3;
+        font-weight: $font-weight-h3;
+        letter-spacing: $letter-spacing-h3;
+        line-height: $line-height-h3;
+      }
+
+      h4 {
+        font-size: $font-size-h4;
+        font-weight: $font-weight-h4;
+        letter-spacing: $letter-spacing-h4;
+        line-height: $line-height-h4;
+      }
+
+      h5 {
+        font-size: $font-size-h5;
+        font-weight: $font-weight-h5;
+        letter-spacing: $letter-spacing-h5;
+        line-height: $line-height-h5;
+      }
+
+      h6 {
+        font-size: $font-size-h6;
+        font-weight: $font-weight-h6;
+        letter-spacing: $letter-spacing-h6;
+        line-height: $line-height-h6;
+      }
+
+      table {
+        margin-bottom: $space-12;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      table tr {
+        border: 1px solid $brand-border-color;
+      }
+
+      table td,
+      table th {
+        padding: $data-table-row-column-padding;
+      }
+
+      ul {
+        margin-left: $space-4;
+      }
+
+      p {
+        margin-bottom: $space-16;
+      }
+    }
+
+    .editor-toolbar.fullscreen::before,
+    .editor-toolbar.fullscreen::after {
+      background: transparent;
     }
   }
-
-  .message {
-    color: $input-error-color;
-  }
-}
-
-.bar {
-  position: relative;
-  display: block;
-  width: 100%;
-
-  &:before,
-  &:after {
-    content: '';
-    height: $input-bar-height;
-    width: 0;
-    bottom: 0;
-    position: absolute;
-    background: $input-bar-color;
-    transition: all 0.2s ease-in-out;
-  }
-  &:before {
-    left: 50%;
-  }
-  &:after {
-    right: 50%;
-  }
-}
-
-.message {
-  display: block;
-  height: $input-message-height;
-  padding: $input-message-padding;
-  position: relative;
-  color: $input-message-color;
-  font-size: $input-message-font-size;
-  font-weight: $input-message-font-weight;
-}
-
-.disabled {
-  opacity: 0.6;
 }
 </style>
