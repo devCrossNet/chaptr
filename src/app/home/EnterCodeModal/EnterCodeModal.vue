@@ -49,7 +49,7 @@ export default {
     hasErrors() {
       return this.errors && this.errors.items.length > 0;
     },
-    isSubmitDisabled() {
+    isSubmitDisabled /* istanbul ignore next */() {
       return this.hasErrors || (this.code.length <= 0 || this.code.length > 6);
     },
   },

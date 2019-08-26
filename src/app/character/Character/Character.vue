@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition']),
-    getAge(character: ICharacter) {
+    getAge /* istanbul ignore next */(character: ICharacter) {
       const birthday = character.birthday ? new Date(character.birthday) : new Date();
       return new Date(Date.now() - birthday.getTime()).getUTCFullYear() - 1970;
     },

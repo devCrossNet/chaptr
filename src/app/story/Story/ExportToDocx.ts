@@ -19,11 +19,11 @@ marked.setOptions({
   xhtml: false,
 });
 
-const getDocumentTitle = (story: IStory) => `# ${story.title}\n\n`;
+const getDocumentTitle = /* istanbul ignore next */ (story: IStory) => `# ${story.title}\n\n`;
 
-const getAbstract = (story: IStory) => `## Abstract\n\n${story.abstract}\n\n`;
+const getAbstract = /* istanbul ignore next */ (story: IStory) => `## Abstract\n\n${story.abstract}\n\n`;
 
-const getStory = (story: IStory, events: IEvent[], getCharacterById: any) => {
+const getStory = /* istanbul ignore next */ (story: IStory, events: IEvent[], getCharacterById: any) => {
   let text = `## Story\n\n`;
 
   events.forEach((e: IEvent) => {
@@ -37,7 +37,7 @@ const getStory = (story: IStory, events: IEvent[], getCharacterById: any) => {
   return text + '\n\n';
 };
 
-const getCharacterList = (characters: ICharacter[]) => {
+const getCharacterList = /* istanbul ignore next */ (characters: ICharacter[]) => {
   let text = `## Characters\n\n`;
 
   characters.forEach((character: ICharacter) => {
@@ -57,7 +57,7 @@ const getCharacterList = (characters: ICharacter[]) => {
   return text + '\n\n';
 };
 
-const getPlaceList = (places: IPlace[]) => {
+const getPlaceList = /* istanbul ignore next */ (places: IPlace[]) => {
   let text = `## Places\n\n`;
 
   places.forEach((place: IPlace) => {
@@ -70,7 +70,7 @@ const getPlaceList = (places: IPlace[]) => {
   return text + '\n\n';
 };
 
-const getItemList = (items: IItem[]) => {
+const getItemList = /* istanbul ignore next */ (items: IItem[]) => {
   let text = `## Items\n\n`;
 
   items.forEach((item: IItem) => {
@@ -82,7 +82,7 @@ const getItemList = (items: IItem[]) => {
 
   return text + '\n\n';
 };
-
+/* istanbul ignore next */
 export const ExportToDocx = (
   story: IStory,
   events: IEvent[],

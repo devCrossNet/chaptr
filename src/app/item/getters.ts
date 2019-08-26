@@ -7,10 +7,10 @@ export interface IItemGetters {
 }
 
 export const ItemGetters: IItemGetters = {
-  allItems(state) {
+  allItems /* istanbul ignore next */(state) {
     return state.items;
   },
-  getItemById: (state) => (id: string) => {
+  getItemById /* istanbul ignore next */: (state) => (id: string) => {
     return state.items.find((char: IItem) => char.id === id);
   },
 };

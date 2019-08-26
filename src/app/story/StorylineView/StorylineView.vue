@@ -57,7 +57,7 @@ export default {
 
       return storylines.length;
     },
-    storylines() {
+    storylines /* istanbul ignore next */() {
       let storylines: any = [];
 
       this.events.forEach((event: IEvent) => {
@@ -111,7 +111,7 @@ export default {
     };
   },
   methods: {
-    getStorylineColor(storylineIndex: number, hasColor: number) {
+    getStorylineColor /* istanbul ignore next */(storylineIndex: number, hasColor: number) {
       if (hasColor === 0) {
         return 'transparent';
       }

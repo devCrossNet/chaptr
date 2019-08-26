@@ -10,10 +10,10 @@ export interface IItemActions {
 }
 
 export const ItemActions: IItemActions = {
-  addItem({ commit }, item): void {
+  addItem /* istanbul ignore next */({ commit }, item): void {
     commit('ADD_ITEM', item);
   },
-  updateItem({ commit }, item): void {
+  updateItem /* istanbul ignore next */({ commit }, item): void {
     commit('UPDATE_ITEM', item);
   },
 };

@@ -7,10 +7,10 @@ export interface IPlaceGetters {
 }
 
 export const PlaceGetters: IPlaceGetters = {
-  allPlaces(state) {
+  allPlaces /* istanbul ignore next */(state) {
     return state.places;
   },
-  getPlaceById: (state) => (id: string) => {
+  getPlaceById /* istanbul ignore next */: (state) => (id: string) => {
     return state.places.find((char: IPlace) => char.id === id);
   },
 };

@@ -10,10 +10,10 @@ export interface IPlaceActions {
 }
 
 export const PlaceActions: IPlaceActions = {
-  addPlace({ commit }, place): void {
+  addPlace /* istanbul ignore next */({ commit }, place): void {
     commit('ADD_PLACE', place);
   },
-  updatePlace({ commit }, place): void {
+  updatePlace /* istanbul ignore next */({ commit }, place): void {
     commit('UPDATE_PLACE', place);
   },
 };

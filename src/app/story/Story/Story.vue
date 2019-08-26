@@ -147,11 +147,9 @@ export default {
     ...mapGetters('item', ['allItems']),
     orderedEvents() {
       if (this.view === 'time') {
-        return this.events.slice(0).sort(
-          (a: IEvent, b: IEvent): any => {
-            return new Date(a.date).getTime() - new Date(b.date).getTime();
-          },
-        );
+        return this.events.slice(0).sort((a: IEvent, b: IEvent): any => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        });
       }
 
       return this.events;
@@ -199,7 +197,7 @@ export default {
         this.view = 'print';
       }
     },
-    exportToDocx() {
+    exportToDocx /* istanbul ignore next */() {
       ExportToDocx(this.story, this.events, this.getCharacterById, this.allCharacters, this.allPlaces, this.allItems);
     },
   },
