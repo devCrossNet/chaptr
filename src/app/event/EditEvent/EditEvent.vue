@@ -90,6 +90,10 @@
         <vue-grid-row>
           <vue-grid-item>
             <vue-autocomplete
+              name="character"
+              id="character"
+              :min-input-chars="0"
+              :max-options="2"
               :options="characters"
               :placeholder="$t('common.search.characters' /* Search for Characters */)"
               @request="getCharacters"
@@ -98,7 +102,7 @@
           </vue-grid-item>
         </vue-grid-row>
 
-        <vue-grid-row>
+        <vue-grid-row v-if="eventCharacters.length > 0">
           <vue-grid-item>
             <h5>{{ $t('common.characters' /* Characters */) }}</h5>
             <ul :class="$style.characterList">
