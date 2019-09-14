@@ -13,6 +13,6 @@ export const PlaceMutations: IPlaceMutations = {
   UPDATE_PLACE: (state, place) => {
     const index: number = state.places.findIndex((c: IPlace) => c.id === place.id);
 
-    state.places[index] = place;
+    state.places.splice(index, 1, place);
   },
 };

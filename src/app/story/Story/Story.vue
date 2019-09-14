@@ -8,7 +8,19 @@
           </vue-grid-item>
         </vue-grid-row>
 
-        <print-view :chapters="chapters" :get-character-by-id="getCharacterById" v-show="view === 'print'" />
+        <vue-grid-row>
+          <vue-grid-item>
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
+          </vue-grid-item>
+        </vue-grid-row>
+
+        <print-view
+          :chapters="chapters"
+          :get-character-by-id="getCharacterById"
+          :get-place-by-id="getPlaceById"
+          :get-item-by-id="getItemById"
+          v-show="view === 'print'"
+        />
 
         <chronological-view :events="orderedEvents" :get-character-by-id="getCharacterById" v-show="view === 'time'" />
 
@@ -16,38 +28,6 @@
       </vue-grid>
 
       <vue-mobile-menu slot="sidebar">
-        <vue-button
-          warn
-          @click="$router.push('/')"
-          :aria-label="$t('common.back' /* Back */)"
-          :title="$t('common.back' /* Back */)"
-        >
-          <vue-icon-arrow-left />
-        </vue-button>
-        <vue-button
-          primary
-          @click="$router.push('/character')"
-          :aria-label="$t('common.add.character' /* Add a new Character */)"
-          :title="$t('common.add.character' /* Add a new Character */)"
-        >
-          <vue-icon-user />
-        </vue-button>
-        <vue-button
-          primary
-          @click="$router.push('/place')"
-          :aria-label="$t('common.add.place' /* Add a new Place */)"
-          :title="$t('common.add.place' /* Add a new Place */)"
-        >
-          <vue-icon-globe />
-        </vue-button>
-        <vue-button
-          primary
-          @click="$router.push('/item')"
-          :aria-label="$t('common.add.item' /* Add a new Item */)"
-          :title="$t('common.add.item' /* Add a new Item */)"
-        >
-          <vue-icon-suit-case />
-        </vue-button>
         <vue-button
           accent
           @click="$router.push(`/event/edit/${story.id}`)"
@@ -109,6 +89,7 @@ import VueIconBook from '@components/icons/VueIconBook/VueIconBook.vue';
 import VueIconBarChart from '@components/icons/VueIconBarChart/VueIconBarChart.vue';
 import VueIconClock from '@components/icons/VueIconClock/VueIconClock.vue';
 import VueIconWord from '@components/icons/VueIconWord/VueIconWord.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   metaInfo() {
@@ -117,6 +98,7 @@ export default {
     };
   },
   components: {
+    VueBreadcrumb,
     VueIconWord,
     VueIconClock,
     VueIconBarChart,
@@ -143,8 +125,11 @@ export default {
     ...mapGetters('event', ['getEventsByStoryId']),
     ...mapGetters('app', ['menuPosition']),
     ...mapGetters('character', ['allCharacters', 'getCharacterById']),
-    ...mapGetters('place', ['allPlaces']),
-    ...mapGetters('item', ['allItems']),
+    ...mapGetters('place', ['allPlaces', 'getPlaceById']),
+    ...mapGetters('item', ['allItems', 'getItemById']),
+    breadcrumbItems() {
+      return [{ label: 'Stories', href: '/' }, { label: this.story.title, href: '/' }];
+    },
     orderedEvents() {
       if (this.view === 'time') {
         return this.events.slice(0).sort((a: IEvent, b: IEvent): any => {

@@ -16,7 +16,7 @@ export const StoryMutations: IStoryMutations = {
   UPDATE_STORY: (state: IStoryState, story: IStory) => {
     const index: number = state.stories.findIndex((s: IStory) => s.id === story.id);
 
-    state.stories[index] = story;
+    state.stories.splice(index, 1, story);
   },
   SET_CURRENT_STORY: (state: IStoryState, id: string) => {
     state.currentStory = id;

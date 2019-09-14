@@ -13,6 +13,6 @@ export const ItemMutations: IItemMutations = {
   UPDATE_ITEM: (state, item) => {
     const index: number = state.items.findIndex((c: IItem) => c.id === item.id);
 
-    state.items[index] = item;
+    state.items.splice(index, 1, item);
   },
 };

@@ -14,6 +14,6 @@ export const EventMutations: IEventMutations = {
   UPDATE_EVENT: (state: IEventState, event: IEvent) => {
     const index: number = state.events.findIndex((e: IEvent) => e.id === event.id);
 
-    state.events[index] = event;
+    state.events.splice(index, 1, event);
   },
 };

@@ -13,25 +13,60 @@
               <vue-card>
                 <template slot="header">{{ event.title }}</template>
 
-                <div v-show="event.notes && event.notes !== ''">
-                  <vue-grid-row>
-                    <vue-grid-item :class="$style.characters">
-                      <label>{{ $t('common.characters' /* Characters */) }}</label>
-                      <ul>
-                        <li v-for="characterId in event.characters" :key="characterId">
-                          {{ getCharacterById(characterId).name }}
-                        </li>
-                      </ul>
-                    </vue-grid-item>
+                <vue-grid-row :class="$style.meta">
+                  <vue-grid-item>
+                    <vue-grid-row>
+                      <vue-grid-item>
+                        <label>{{ $t('common.characters' /* Characters */) }}</label>
+                        <ul>
+                          <li v-for="characterId in event.characters" :key="characterId">
+                            <router-link :to="`/character/edit/${getCharacterById(characterId).id}`">
+                              {{ getCharacterById(characterId).name }}
+                            </router-link>
+                          </li>
+                        </ul>
+                      </vue-grid-item>
+                      <vue-grid-item>
+                        <label>{{ $t('common.places' /* Places */) }}</label>
+                        <ul>
+                          <li v-for="placeId in event.places" :key="placeId">
+                            <router-link :to="`/place/edit/${getPlaceById(placeId).id}`">
+                              {{ getPlaceById(placeId).name }}
+                            </router-link>
+                          </li>
+                        </ul>
+                      </vue-grid-item>
+                      <vue-grid-item>
+                        <label>{{ $t('common.items' /* Items */) }}</label>
+                        <ul>
+                          <li v-for="itemId in event.items" :key="itemId">
+                            <router-link :to="`/item/edit/${getItemById(itemId).id}`">
+                              {{ getItemById(itemId).name }}
+                            </router-link>
+                          </li>
+                        </ul>
+                      </vue-grid-item>
+                    </vue-grid-row>
+                  </vue-grid-item>
+                  <vue-grid-item>
+                    <ul :class="$style.thumbnails">
+                      <li
+                        v-for="(image, idx) in images(event)"
+                        :key="`${event.id}-image-${idx}`"
+                        :style="{ backgroundImage: `url(${image})` }"
+                      ></li>
+                    </ul>
+                  </vue-grid-item>
+                </vue-grid-row>
 
-                    <vue-grid-item>
-                      <label>{{ $t('common.notes' /* Notes */) }}</label>
-                      <vue-markdown>
-                        {{ event.notes }}
-                      </vue-markdown>
-                    </vue-grid-item>
-                  </vue-grid-row>
-                </div>
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <label>{{ $t('common.notes' /* Notes */) }}</label>
+                    <vue-markdown>
+                      {{ event.notes }}
+                    </vue-markdown>
+                  </vue-grid-item>
+                </vue-grid-row>
 
                 <vue-button
                   slot="footer"
@@ -59,6 +94,10 @@ import VueCard from '@components/VueCard/VueCard.vue';
 import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
+import { IEvent } from '@/app/event/IEvent';
+import { ICharacter } from '@/app/character/ICharacter';
+import { IPlace } from '@/app/place/IPlace';
+import { IItem } from '@/app/item/IItem';
 
 export default {
   name: 'PrintView',
@@ -81,12 +120,53 @@ export default {
       type: Function,
       required: true,
     },
+    getPlaceById: {
+      type: Function,
+      required: true,
+    },
+    getItemById: {
+      type: Function,
+      required: true,
+    },
   },
   data(): any {
     return {};
   },
   computed: {},
-  methods: {},
+  methods: {
+    images(event: IEvent) {
+      let images: string[] = [];
+
+      event.characters &&
+        event.characters.forEach((id) => {
+          const character: ICharacter = this.getCharacterById(id);
+
+          if (character.images) {
+            images = [...images, ...character.images];
+          }
+        });
+
+      event.places &&
+        event.places.forEach((id) => {
+          const place: IPlace = this.getPlaceById(id);
+
+          if (place.images) {
+            images = [...images, ...place.images];
+          }
+        });
+
+      event.items &&
+        event.items.forEach((id) => {
+          const item: IItem = this.getItemById(id);
+
+          if (item.images) {
+            images = [...images, ...item.images];
+          }
+        });
+
+      return images;
+    },
+  },
 };
 </script>
 
@@ -101,8 +181,32 @@ export default {
     margin: $space-8 0;
   }
 
-  .characters {
-    flex: 0 1 25%;
+  .meta {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: block;
+        height: $space-24;
+      }
+    }
+  }
+
+  .thumbnails {
+    display: flex;
+    overflow-x: scroll;
+
+    li {
+      flex: 0 0 25%;
+      height: 250px !important;
+      display: inline-flex;
+      background-size: cover;
+      background-position: center;
+      margin: 0 $space-4 $space-4 0;
+      box-shadow: inset 0 0 4px 0 rgba(18, 19, 21, 0.12), inset 0 4px 12px 0 rgba(18, 19, 21, 0.5);
+    }
   }
 }
 </style>

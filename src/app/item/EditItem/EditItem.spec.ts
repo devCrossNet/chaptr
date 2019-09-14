@@ -14,6 +14,7 @@ describe('EditItem.vue', () => {
   const item: IItem = {
     id: 'foo',
     name: 'foo bar',
+    images: [],
     type: '',
     location: '',
     notes: '',
@@ -125,34 +126,5 @@ describe('EditItem.vue', () => {
     wrapper.vm.onSubmit();
     expect(storeModules.item.actions.updateItem).toHaveBeenCalled();
     expect($router.push).toHaveBeenCalled();
-  });
-
-  test('should go back to items page', () => {
-    const $router: any = { push: jest.fn() };
-    const store = new Vuex.Store({ modules: storeModules });
-    const wrapper = mount(EditItem, {
-      store,
-      localVue,
-      i18n,
-      mocks: {
-        $route: {
-          params: {
-            id: 'foo',
-          },
-        },
-        $router,
-      },
-    }) as any;
-
-    wrapper
-      .findAll('button')
-      .at(1)
-      .trigger('click');
-    wrapper
-      .findAll('button')
-      .at(3)
-      .trigger('click');
-
-    expect($router.push).toHaveBeenCalledTimes(2);
   });
 });

@@ -49,6 +49,8 @@
   "common.save": "Save",
   "common.save.State": "Save current State",
   "common.search.characters": "Search for Characters",
+  "common.search.items": "Search for Items",
+  "common.search.places": "Search for Places",
   "common.share.EnterCode": "Enter Code",
   "common.share.State": "Share current State",
   "common.share.exportToDocx": "Export to Word",

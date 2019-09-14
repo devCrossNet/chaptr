@@ -52,6 +52,7 @@ export default {
 }
 .sidebar {
   position: relative;
+  min-width: $space-40 + $space-24;
 
   .switch {
     position: absolute;
@@ -64,7 +65,7 @@ export default {
     margin: 0;
     border-radius: 0;
     width: $space-32 * 2;
-    background-color: transparent;
+    background: $brand-default-gradient;
     border: none;
     color: $brand-text-color-inverse;
 

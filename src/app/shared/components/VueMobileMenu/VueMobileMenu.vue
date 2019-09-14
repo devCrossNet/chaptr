@@ -23,7 +23,7 @@ export default {
 @import '../../design-system';
 
 .vueMobileMenu {
-  background: $brand-primary-gradient;
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -41,7 +41,7 @@ export default {
       margin: 0;
       border-radius: 0;
       width: $space-32 * 2;
-      background-color: transparent;
+      background: $brand-default-gradient;
       border: none;
       color: $brand-text-color-inverse;
 

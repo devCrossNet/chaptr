@@ -15,41 +15,65 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <vue-input
-              autofocus=""
-              name="name"
-              id="name"
-              required
-              :placeholder="$t('common.name' /* Name */)"
-              validation="required"
-              v-model="place.name"
-            />
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
           </vue-grid-item>
         </vue-grid-row>
+
         <vue-grid-row>
           <vue-grid-item>
-            <vue-input
-              name="type"
-              id="type"
-              :placeholder="$t('common.type' /* Type */)"
-              validation="required"
-              v-model="place.type"
-            />
+            <vue-image-gallery
+              :as-data-url="false"
+              :image-urls="place.images"
+              @add-image-url="onAddImageUrl"
+              @remove-image-url="onRemoveImageUrl"
+            ></vue-image-gallery>
           </vue-grid-item>
-        </vue-grid-row>
-        <vue-grid-row>
+
           <vue-grid-item>
-            <vue-input
-              name="location"
-              id="location"
-              :placeholder="$t('common.location' /* Location */)"
-              v-model="place.location"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-textarea name="notes" id="notes" :placeholder="$t('common.notes' /* Notes */)" v-model="place.notes" />
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  autofocus=""
+                  name="name"
+                  id="name"
+                  required
+                  :placeholder="$t('common.name' /* Name */)"
+                  validation="required"
+                  v-model="place.name"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="type"
+                  id="type"
+                  :placeholder="$t('common.type' /* Type */)"
+                  validation="required"
+                  v-model="place.type"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-input
+                  name="location"
+                  id="location"
+                  :placeholder="$t('common.location' /* Location */)"
+                  v-model="place.location"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
+            <vue-grid-row>
+              <vue-grid-item>
+                <vue-textarea
+                  name="notes"
+                  id="notes"
+                  :placeholder="$t('common.notes' /* Notes */)"
+                  v-model="place.notes"
+                />
+              </vue-grid-item>
+            </vue-grid-row>
           </vue-grid-item>
         </vue-grid-row>
 
@@ -67,11 +91,7 @@
       </vue-grid>
     </form>
 
-    <vue-mobile-menu slot="sidebar">
-      <vue-button @click="goBack" :aria-label="$t('common.back' /* Back */)" :title="$t('common.back' /* Back */)">
-        <vue-icon-arrow-left />
-      </vue-button>
-    </vue-mobile-menu>
+    <vue-mobile-menu slot="sidebar"> </vue-mobile-menu>
   </vue-layout>
 </template>
 
@@ -89,6 +109,8 @@ import VueInput from '@components/VueInput/VueInput.vue';
 import VueTextarea from '@components/VueTextarea/VueTextarea.vue';
 import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import { IPlace } from '@/app/place/IPlace';
+import VueImageGallery from '@components/VueImageGallery/VueImageGallery.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   name: 'EditPlace',
@@ -99,6 +121,8 @@ export default {
     title: 'Chaptr | Edit Place',
   },
   components: {
+    VueBreadcrumb,
+    VueImageGallery,
     VueTextarea,
     VueInput,
     VueIconArrowLeft,
@@ -113,19 +137,43 @@ export default {
   computed: {
     ...mapGetters('place', ['getPlaceById']),
     ...mapGetters('app', ['menuPosition']),
+    breadcrumbItems() {
+      return [
+        { label: 'Stories', href: '/' },
+        { label: 'Places', href: '/place' },
+        { label: this.place.id === null ? 'Add a new Place' : 'Edit Place', href: '/' },
+      ];
+    },
   },
   methods: {
     ...mapActions('place', ['addPlace', 'updatePlace']),
     ...mapActions('app', ['changeMenuPosition']),
-    onSubmit() {
+    load() {
+      if (this.$route.params.id) {
+        this.place = Object.assign({}, this.place, this.getPlaceById(this.$route.params.id));
+      }
+    },
+    save() {
       if (this.place.id === null) {
         this.place.id = getGUID();
         this.addPlace(this.place);
       } else {
         this.updatePlace(this.place);
       }
-
-      this.$router.push(`/place`);
+    },
+    onAddImageUrl(imageUrl: string) {
+      this.place.images.push(imageUrl);
+      this.save();
+      this.load();
+    },
+    onRemoveImageUrl(imageUrl: string) {
+      this.place.images = this.place.images.filter((i: string) => i !== imageUrl);
+      this.save();
+      this.load();
+    },
+    onSubmit() {
+      this.save();
+      this.goBack();
     },
     goBack() {
       this.$router.push('/place');
@@ -136,6 +184,7 @@ export default {
       place: {
         id: null,
         name: '',
+        images: [],
         type: '',
         location: '',
         notes: '',
@@ -143,9 +192,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$route.params.id) {
-      this.place = this.getPlaceById(this.$route.params.id);
-    }
+    this.load();
   },
 };
 </script>
@@ -154,7 +201,5 @@ export default {
 @import '~@/app/shared/design-system';
 
 .editPlace {
-  margin-top: $nav-bar-height;
-  min-height: 500px;
 }
 </style>

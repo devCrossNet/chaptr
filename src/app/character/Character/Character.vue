@@ -9,6 +9,12 @@
         </vue-grid-row>
 
         <vue-grid-row>
+          <vue-grid-item>
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
+          </vue-grid-item>
+        </vue-grid-row>
+
+        <vue-grid-row>
           <vue-grid-item fill v-for="character in allCharacters" :key="character.id" :class="$style.card">
             <vue-card>
               <template slot="header">
@@ -38,14 +44,6 @@
 
       <vue-mobile-menu slot="sidebar">
         <vue-button
-          @click="$router.push(`/story/${currentStory}`)"
-          :aria-label="$t('common.back' /* Back */)"
-          :title="$t('common.back' /* Back */)"
-        >
-          <vue-icon-arrow-left />
-        </vue-button>
-
-        <vue-button
           @click="$router.push('/character/edit')"
           :aria-label="$t('common.add.character' /* Add a new Character */)"
           :title="$t('common.add.character' /* Add a new Character */)"
@@ -72,12 +70,14 @@ import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
 import { ICharacter } from '@/app/character/ICharacter';
 import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   metaInfo: {
     title: 'Characters',
   },
   components: {
+    VueBreadcrumb,
     VueMarkdown,
     VueIconAdd,
     VueIconPencil,
@@ -95,6 +95,9 @@ export default {
     ...mapGetters('character', ['allCharacters']),
     ...mapGetters('story', ['currentStory']),
     ...mapGetters('app', ['menuPosition']),
+    breadcrumbItems() {
+      return [{ label: 'Stories', href: '/' }, { label: 'Characters', href: '/character' }];
+    },
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition']),
