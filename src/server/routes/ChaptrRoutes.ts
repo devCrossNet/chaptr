@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as Express from 'express';
 import { Request, Response } from 'express';
 import { getIntInRange, ensureDirectoryExists } from '@vuesion/utils/dist';
+import request from 'request';
 
 const uploadPath: string = path.resolve(__dirname, '../upload');
 
@@ -45,5 +46,11 @@ export const ChaptrRoutes = (app: Express.Application) => {
     fs.unlinkSync(filePath);
 
     res.status(200).json({ content });
+  });
+
+  app.get('/image-proxy', (req: Request, res: Response) => {
+    const url = req.query.url;
+
+    request.get(url).pipe(res);
   });
 };

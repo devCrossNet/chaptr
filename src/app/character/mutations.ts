@@ -13,6 +13,6 @@ export const CharacterMutations: ICharacterMutations = {
   UPDATE_CHARACTER: (state, character) => {
     const index: number = state.characters.findIndex((c: ICharacter) => c.id === character.id);
 
-    state.characters[index] = character;
+    state.characters.splice(index, 1, character);
   },
 };

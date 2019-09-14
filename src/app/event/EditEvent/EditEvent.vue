@@ -15,119 +15,209 @@
 
         <vue-grid-row>
           <vue-grid-item>
-            <vue-input
-              autofocus=""
-              name="title"
-              id="title"
-              required
-              :placeholder="$t('common.title' /* Title */)"
-              validation="required"
-              v-model="event.title"
-            />
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
           </vue-grid-item>
         </vue-grid-row>
 
         <vue-grid-row>
           <vue-grid-item>
-            <vue-date-picker
-              name="date"
-              id="date"
-              required
-              :min-date="new Date('1950-01-01')"
-              :current-date="event.date ? new Date(event.date) : new Date()"
-              :first-day-of-week="1"
-              :placeholder="$t('common.date' /* Date */)"
-              @change="event.date = $event.toUTCString()"
-            />
+            <vue-carousel
+              :show-delete="false"
+              :images="images"
+              @remove="$emit('remove-image-url', $event)"
+              :min-height="1024"
+            ></vue-carousel>
+          </vue-grid-item>
+          <vue-grid-item>
+            <vue-tab-group>
+              <vue-tab-item title="Event">
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-input
+                      autofocus=""
+                      name="title"
+                      id="title"
+                      required
+                      :placeholder="$t('common.title' /* Title */)"
+                      validation="required"
+                      v-model="event.title"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-date-picker
+                      name="date"
+                      id="date"
+                      required
+                      :min-date="new Date('1950-01-01')"
+                      :current-date="event.date ? new Date(event.date) : new Date()"
+                      :first-day-of-week="1"
+                      :placeholder="$t('common.date' /* Date */)"
+                      @change="event.date = $event.toUTCString()"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-select
+                      :placeholder="$t('common.storyline' /* Storyline */)"
+                      required
+                      validation="required"
+                      name="storyline"
+                      id="storyline"
+                      :value="event.storyline.toString()"
+                      :options="storylines"
+                      @input="event.storyline = parseInt($event, 10)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-select
+                      :placeholder="$t('common.chapter' /* Chapter */)"
+                      required
+                      validation="required"
+                      name="chapter"
+                      id="chapter"
+                      :value="event.chapter.toString()"
+                      :options="chapters"
+                      @input="event.chapter = parseInt($event, 10)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-select
+                      :placeholder="$t('common.storylineOrder' /* Storyline Order */)"
+                      required
+                      validation="required"
+                      name="storylineOrder"
+                      id="storylineOrder"
+                      :value="event.storylineOrder.toString()"
+                      :options="storylineOrders"
+                      @input="event.storylineOrder = parseInt($event, 10)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+              </vue-tab-item>
+              <vue-tab-item title="Notes">
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-textarea
+                      name="notes"
+                      id="notes"
+                      :placeholder="$t('common.notes' /* Notes */)"
+                      v-model="event.notes"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+              </vue-tab-item>
+              <vue-tab-item title="Characters, Places and Items">
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-autocomplete
+                      name="character"
+                      id="character"
+                      :min-input-chars="0"
+                      :max-options="2"
+                      :options="characters"
+                      :placeholder="$t('common.search.characters' /* Search for Characters */)"
+                      @request="getCharacters"
+                      @change="event.characters.push($event.value)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row v-if="eventCharacters.length > 0">
+                  <vue-grid-item>
+                    <h5>{{ $t('common.characters' /* Characters */) }}</h5>
+                    <ul :class="$style.list">
+                      <li v-for="character in eventCharacters">
+                        <router-link :to="`/character/edit/${character.id}`">{{ character.name }}</router-link>
+                        <vue-button
+                          color="danger"
+                          :aria-label="$t('common.delete' /* Delete */)"
+                          @click.prevent="removeCharacter(character)"
+                        >
+                          <vue-icon-trash />
+                        </vue-button>
+                      </li>
+                    </ul>
+                  </vue-grid-item>
+                </vue-grid-row>
+
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-autocomplete
+                      name="place"
+                      id="place"
+                      :min-input-chars="0"
+                      :max-options="2"
+                      :options="places"
+                      :placeholder="$t('common.search.places' /* Search for Places */)"
+                      @request="getPlaces"
+                      @change="event.places.push($event.value)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row v-if="eventPlaces.length > 0">
+                  <vue-grid-item>
+                    <h5>{{ $t('common.places' /* Places */) }}</h5>
+                    <ul :class="$style.list">
+                      <li v-for="place in eventPlaces">
+                        <router-link :to="`/place/edit/${place.id}`">{{ place.name }}</router-link>
+                        <vue-button
+                          color="danger"
+                          :aria-label="$t('common.delete' /* Delete */)"
+                          @click.prevent="removePlace(place)"
+                        >
+                          <vue-icon-trash />
+                        </vue-button>
+                      </li>
+                    </ul>
+                  </vue-grid-item>
+                </vue-grid-row>
+
+                <vue-grid-row>
+                  <vue-grid-item>
+                    <vue-autocomplete
+                      name="item"
+                      id="item"
+                      :min-input-chars="0"
+                      :max-options="2"
+                      :options="items"
+                      :placeholder="$t('common.search.items' /* Search for Items */)"
+                      @request="getItems"
+                      @change="event.items.push($event.value)"
+                    />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row v-if="eventItems.length > 0">
+                  <vue-grid-item>
+                    <h5>{{ $t('common.items' /* Items */) }}</h5>
+                    <ul :class="$style.list">
+                      <li v-for="item in eventItems">
+                        <router-link :to="`/item/edit/${item.id}`">{{ item.name }}</router-link>
+                        <vue-button
+                          color="danger"
+                          :aria-label="$t('common.delete' /* Delete */)"
+                          @click.prevent="removeItem(item)"
+                        >
+                          <vue-icon-trash />
+                        </vue-button>
+                      </li>
+                    </ul>
+                  </vue-grid-item>
+                </vue-grid-row>
+              </vue-tab-item>
+            </vue-tab-group>
           </vue-grid-item>
         </vue-grid-row>
 
         <vue-grid-row>
           <vue-grid-item>
-            <vue-select
-              :placeholder="$t('common.storyline' /* Storyline */)"
-              required
-              validation="required"
-              name="storyline"
-              id="storyline"
-              :value="event.storyline.toString()"
-              :options="storylines"
-              @input="event.storyline = parseInt($event, 10)"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-select
-              :placeholder="$t('common.chapter' /* Chapter */)"
-              required
-              validation="required"
-              name="chapter"
-              id="chapter"
-              :value="event.chapter.toString()"
-              :options="chapters"
-              @input="event.chapter = parseInt($event, 10)"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-select
-              :placeholder="$t('common.storylineOrder' /* Storyline Order */)"
-              required
-              validation="required"
-              name="storylineOrder"
-              id="storylineOrder"
-              :value="event.storylineOrder.toString()"
-              :options="storylineOrders"
-              @input="event.storylineOrder = parseInt($event, 10)"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-autocomplete
-              name="character"
-              id="character"
-              :min-input-chars="0"
-              :max-options="2"
-              :options="characters"
-              :placeholder="$t('common.search.characters' /* Search for Characters */)"
-              @request="getCharacters"
-              @change="event.characters.push($event.value)"
-            />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row v-if="eventCharacters.length > 0">
-          <vue-grid-item>
-            <h5>{{ $t('common.characters' /* Characters */) }}</h5>
-            <ul :class="$style.characterList">
-              <li v-for="character in eventCharacters">
-                {{ character.name }}
-                <vue-button
-                  color="danger"
-                  :aria-label="$t('common.delete' /* Delete */)"
-                  @click.prevent="removeCharacter(character)"
-                >
-                  <vue-icon-trash />
-                </vue-button>
-              </li>
-            </ul>
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
-            <vue-textarea name="notes" id="notes" :placeholder="$t('common.notes' /* Notes */)" v-model="event.notes" />
-          </vue-grid-item>
-        </vue-grid-row>
-
-        <vue-grid-row>
-          <vue-grid-item>
+            <br />
+            <br />
             <vue-button color="primary">
               {{ $t('common.save' /* Save */) }}
             </vue-button>
@@ -142,11 +232,28 @@
 
     <vue-mobile-menu slot="sidebar">
       <vue-button
-        @click="$router.push(`/story/${$route.params.storyId}`)"
-        :aria-label="$t('common.back' /* Back */)"
-        :title="$t('common.back' /* Back */)"
+        primary
+        @click="$router.push('/character/edit')"
+        :aria-label="$t('common.add.character' /* Add a new Character */)"
+        :title="$t('common.add.character' /* Add a new Character */)"
       >
-        <vue-icon-arrow-left />
+        <vue-icon-user />
+      </vue-button>
+      <vue-button
+        primary
+        @click="$router.push('/place/edit')"
+        :aria-label="$t('common.add.place' /* Add a new Place */)"
+        :title="$t('common.add.place' /* Add a new Place */)"
+      >
+        <vue-icon-globe />
+      </vue-button>
+      <vue-button
+        primary
+        @click="$router.push('/item/edit')"
+        :aria-label="$t('common.add.item' /* Add a new Item */)"
+        :title="$t('common.add.item' /* Add a new Item */)"
+      >
+        <vue-icon-suit-case />
       </vue-button>
     </vue-mobile-menu>
   </vue-layout>
@@ -172,13 +279,26 @@ import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueIconTrash from '@components/icons/VueIconTrash/VueIconTrash.vue';
+import { IPlace } from '@/app/place/IPlace';
+import { IItem } from '@/app/item/IItem';
+import VueTabGroup from '@components/VueTabGroup/VueTabGroup.vue';
+import VueTabItem from '@components/VueTabGroup/VueTabItem/VueTabItem.vue';
+import VueCarousel, { ICarouselImage } from '@components/VueCarousel/VueCarousel.vue';
+import VueIconUser from '@components/icons/VueIconUser/VueIconUser.vue';
+import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
+import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import { IStory } from '@/app/story/IStory';
 
 interface IData {
   event: IEvent;
   characters: IAutocompleteOption[];
+  places: IAutocompleteOption[];
+  items: IAutocompleteOption[];
   chapters: any[];
   storylineOrders: any[];
   storylines: any[];
+  story: IStory;
 }
 
 export default {
@@ -191,8 +311,18 @@ export default {
   },
   computed: {
     ...mapGetters('character', ['allCharacters', 'getCharacterById']),
+    ...mapGetters('place', ['allPlaces', 'getPlaceById']),
+    ...mapGetters('item', ['allItems', 'getItemById']),
     ...mapGetters('event', ['getEventsByStoryId', 'getEventById']),
+    ...mapGetters('story', ['getStoryById']),
     ...mapGetters('app', ['menuPosition']),
+    breadcrumbItems() {
+      return [
+        { label: 'Stories', href: '/' },
+        { label: this.story && this.story.title, href: (this.story && `/story/${this.story.id}`) || '' },
+        { label: this.event.id === null ? 'Add Event' : 'Edit Event', href: '/' },
+      ];
+    },
     eventCharacters() {
       const characters: ICharacter[] = [];
 
@@ -202,8 +332,61 @@ export default {
 
       return characters;
     },
+    eventPlaces() {
+      const places: IPlace[] = [];
+
+      this.event.places.forEach((placeId: string) => {
+        places.push(this.getPlaceById(placeId));
+      });
+
+      return places;
+    },
+    eventItems() {
+      const items: IItem[] = [];
+
+      this.event.items.forEach((itemId: string) => {
+        items.push(this.getItemById(itemId));
+      });
+      return items;
+    },
+    images(): any[] {
+      let images: ICarouselImage[] = [];
+
+      this.eventCharacters.forEach((c: ICharacter) => {
+        if (c.images) {
+          c.images.forEach((url: string) => {
+            images.push({ url, alt: '', copyright: '' });
+          });
+        }
+      });
+
+      this.eventPlaces.forEach((p: IPlace) => {
+        if (p.images) {
+          p.images.forEach((url: string) => {
+            images.push({ url, alt: '', copyright: '' });
+          });
+        }
+      });
+
+      this.eventItems.forEach((i: IItem) => {
+        if (i.images) {
+          i.images.forEach((url: string) => {
+            images.push({ url, alt: '', copyright: '' });
+          });
+        }
+      });
+
+      return images;
+    },
   },
   components: {
+    VueBreadcrumb,
+    VueIconSuitCase,
+    VueIconGlobe,
+    VueIconUser,
+    VueCarousel,
+    VueTabItem,
+    VueTabGroup,
     VueIconTrash,
     VueHeadline,
     VueIconArrowLeft,
@@ -226,6 +409,8 @@ export default {
         storyId: null,
         title: '',
         characters: [],
+        places: [],
+        items: [],
         chapter: 0,
         storylineOrder: -1,
         storyline: 0,
@@ -233,9 +418,12 @@ export default {
         notes: '',
       },
       characters: [],
+      places: [],
+      items: [],
       chapters: [],
       storylineOrders: [],
       storylines: [],
+      story: null,
     };
   },
   methods: {
@@ -271,6 +459,51 @@ export default {
           },
         );
     },
+    removeCharacter(character: ICharacter) {
+      this.event.characters = this.event.characters.filter((c: string) => {
+        return c !== character.id;
+      });
+    },
+    getPlaces(query: string) {
+      this.places = this.allPlaces
+        .filter((place: IPlace): boolean => {
+          return (
+            place.name.toLowerCase().indexOf(query.toLowerCase()) > -1 && this.event.places.indexOf(place.id) === -1
+          );
+        })
+        .map(
+          (place: IPlace): IAutocompleteOption => {
+            return {
+              label: place.name,
+              value: place.id,
+            };
+          },
+        );
+    },
+    removePlace(place: IPlace) {
+      this.event.places = this.event.places.filter((p: string) => {
+        return p !== place.id;
+      });
+    },
+    getItems(query: string) {
+      this.items = this.allItems
+        .filter((item: IItem): boolean => {
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 && this.event.items.indexOf(item.id) === -1;
+        })
+        .map(
+          (item: IItem): IAutocompleteOption => {
+            return {
+              label: item.name,
+              value: item.id,
+            };
+          },
+        );
+    },
+    removeItem(item: IItem) {
+      this.event.items = this.event.items.filter((i: string) => {
+        return i !== item.id;
+      });
+    },
     fillChapters() {
       for (let i = 1; i <= 99; i++) {
         this.chapters.push({ label: i.toString(), value: i.toString() });
@@ -292,17 +525,14 @@ export default {
       });
       this.event.storylineOrder = this.event.storylineOrder === -1 ? storyEvents.length : this.event.storylineOrder;
     },
-    removeCharacter(character: ICharacter) {
-      this.event.characters = this.event.characters.filter((c: string) => {
-        return c !== character.id;
-      });
-    },
   },
   mounted() {
     const storyEvents: IEvent[] = this.getEventsByStoryId(this.$route.params.storyId);
 
+    this.story = this.getStoryById(this.$route.params.storyId);
+
     if (this.$route.params.id) {
-      this.event = this.getEventById(this.$route.params.id);
+      this.event = Object.assign({}, this.event, this.getEventById(this.$route.params.id));
     }
 
     this.fillChapters();
@@ -317,12 +547,13 @@ export default {
 
 .editEvent {
   h5 {
-    margin-top: 0;
+    margin: 0 0 $space-16 0;
   }
 }
 
-.characterList {
-  margin-bottom: $space-unit * 4;
+.list {
+  margin: 0 0 $space-unit * 4 0;
+  padding: 0;
   list-style: initial;
 
   li {

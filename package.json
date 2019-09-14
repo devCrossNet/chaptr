@@ -69,6 +69,7 @@
     "lodash": "4.17.15",
     "lru-cache": "5.1.1",
     "marked": "0.7.0",
+    "request": "2.88.0",
     "serve-favicon": "2.5.0",
     "simplemde": "1.11.2",
     "vee-validate": "2.0.9",
@@ -94,6 +95,7 @@
     "@types/lodash": "4.14.137",
     "@types/marked": "0.6.5",
     "@types/node": "10.12.24",
+    "@types/request": "2.48.3",
     "@types/serve-favicon": "2.2.31",
     "@vue/test-utils": "1.0.0-beta.28",
     "@vuesion/service": "^3.0.3",
@@ -146,10 +148,10 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "coverageThreshold": {
       "global": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
       }
     },
     "coveragePathIgnorePatterns": [

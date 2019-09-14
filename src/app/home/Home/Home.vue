@@ -14,6 +14,30 @@
           <vue-icon-add />
         </vue-button>
         <vue-button
+          primary
+          @click="$router.push('/character')"
+          :aria-label="$t('common.characters' /* Characters */)"
+          :title="$t('common.characters' /* Characters */)"
+        >
+          <vue-icon-user />
+        </vue-button>
+        <vue-button
+          primary
+          @click="$router.push('/place')"
+          :aria-label="$t('common.places' /* Places */)"
+          :title="$t('common.places' /* Places */)"
+        >
+          <vue-icon-globe />
+        </vue-button>
+        <vue-button
+          primary
+          @click="$router.push('/item')"
+          :aria-label="$t('common.items' /* Items */)"
+          :title="$t('common.items' /* Items */)"
+        >
+          <vue-icon-suit-case />
+        </vue-button>
+        <vue-button
           @click="saveState"
           :aria-label="$t('common.save.State' /* Save current State */)"
           :title="$t('common.save.State' /* Save current State */)"
@@ -66,12 +90,18 @@ import VueIconUpload from '@components/icons/VueIconUpload/VueIconUpload.vue';
 import VueIconShare from '@components/icons/VueIconShare/VueIconShare.vue';
 import VueIconKeyboard from '@components/icons/VueIconKeyboard/VueIconKeyboard.vue';
 import EnterCodeModal from '@/app/home/EnterCodeModal/EnterCodeModal.vue';
+import VueIconUser from '@components/icons/VueIconUser/VueIconUser.vue';
+import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
+import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
 
 export default {
   metaInfo: {
     title: 'Chaptr',
   },
   components: {
+    VueIconSuitCase,
+    VueIconGlobe,
+    VueIconUser,
     EnterCodeModal,
     VueIconKeyboard,
     VueIconShare,

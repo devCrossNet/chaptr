@@ -5,6 +5,10 @@
         <vue-headline level="1">{{ $t('common.yourStories' /* Your Stories */) }}</vue-headline>
       </vue-grid-item>
 
+      <vue-grid-item fill>
+        <vue-breadcrumb :items="[{ label: 'Stories', href: '' }]"></vue-breadcrumb>
+      </vue-grid-item>
+
       <vue-grid-item v-for="story in stories" :key="story.id" :class="$style.item">
         <vue-card :class="$style.card">
           <template slot="header">{{ story.title }}</template>
@@ -49,10 +53,12 @@ import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   name: 'StoryList',
   components: {
+    VueBreadcrumb,
     VueIconAdd,
     VueIconPencil,
     VueButton,

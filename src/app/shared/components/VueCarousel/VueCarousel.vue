@@ -5,6 +5,7 @@
     @mouseenter="pause = true"
     @mouseleave="pause = false"
   >
+    <div v-if="preloadedImages.length === 0" :class="$style.noImage">No Images</div>
     <fade-animation
       v-for="(image, idx) in preloadedImages"
       :key="idx"
@@ -21,13 +22,21 @@
         :style="{ backgroundImage: `url(${image.getAttribute('src')})` }"
         :class="$style.image"
       >
+        <vue-button
+          v-if="showDelete"
+          color="primary"
+          outlined
+          @click.prevent.stop="$emit('remove', image.getAttribute('src'))"
+        >
+          <vue-icon-times></vue-icon-times>
+        </vue-button>
         <div v-show="image.getAttribute('title').length > 0" :class="$style.copyright">
           &copy; {{ image.getAttribute('title') }}
         </div>
       </div>
     </fade-animation>
 
-    <ul v-if="showIndicator" :class="$style.indicator">
+    <ul v-if="showIndicator && preloadedImages.length > 1" :class="$style.indicator">
       <li v-for="(image, idx) in preloadedImages" :key="idx" :class="isActiveSlide(idx) && $style.active">&nbsp;</li>
     </ul>
   </div>
@@ -35,6 +44,8 @@
 
 <script lang="ts">
 import FadeAnimation from '../../animations/FadeAnimation/FadeAnimation.vue';
+import VueButton from '@components/VueButton/VueButton.vue';
+import VueIconTimes from '@components/icons/VueIconTimes/VueIconTimes.vue';
 
 export interface ICarouselImage {
   copyright?: string;
@@ -44,7 +55,7 @@ export interface ICarouselImage {
 
 export default {
   name: 'VueCarousel',
-  components: { FadeAnimation },
+  components: { VueIconTimes, VueButton, FadeAnimation },
   props: {
     images: {
       type: Array,
@@ -66,11 +77,15 @@ export default {
       type: Boolean,
       default: true,
     },
+    showDelete: {
+      type: Boolean,
+      default: true,
+    },
   },
   data(): any {
     return {
       currentSlide: this.activeSlide - 1,
-      maxSlides: this.images.length - 1,
+      maxSlides: 0,
       intervalInstance: null,
       pause: false,
       preloadedImages: [],
@@ -80,8 +95,12 @@ export default {
     isActiveSlide(idx: number) {
       return this.currentSlide === idx;
     },
-    preloadImages() {
-      this.images.forEach((image: ICarouselImage) => {
+    preloadImages(images: ICarouselImage[]) {
+      this.preloadedImages = [];
+      this.maxSlides = images.length - 1;
+      this.currentSlide = 0;
+
+      images.forEach((image) => {
         const imageInstance: HTMLImageElement = new Image();
 
         imageInstance.src = image.url;
@@ -103,17 +122,25 @@ export default {
       }
     },
     setInterval() {
+      clearInterval(this.intervalInstance);
+
       if (this.images.length <= 1) {
         return;
       }
       this.intervalInstance = setInterval(this.changeSlide, this.interval);
     },
   },
-  mounted() {
-    this.preloadImages();
-  },
+  mounted() {},
   beforeDestroy() {
     clearInterval(this.intervalInstance);
+  },
+  watch: {
+    images: {
+      immediate: true,
+      handler(images: ICarouselImage[]) {
+        this.preloadImages(images);
+      },
+    },
   },
 };
 </script>
@@ -138,6 +165,13 @@ export default {
   left: 0;
   background-size: cover;
   background-position: 50% 50%;
+}
+
+.noImage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .copyright {

@@ -2,6 +2,7 @@ export interface ICharacter {
   id: string;
   name: string;
   birthday: string;
+  images: string[];
   address?: string;
   eyeColor?: string;
   hairColor?: string;

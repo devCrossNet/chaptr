@@ -4,6 +4,7 @@ import { i18n } from '@shared/plugins/i18n/i18n';
 import EditEvent from './EditEvent.vue';
 import { IEvent } from '../IEvent';
 import { ICharacter } from '../../character/ICharacter';
+import { StoryModule } from '@/app/story/module';
 
 const localVue = createLocalVue();
 
@@ -16,6 +17,8 @@ describe('EditEvent.vue', () => {
     date: '2001-01-01 01:01:01',
     storyline: 1,
     characters: ['foo'],
+    places: ['foo'],
+    items: ['foo'],
     chapter: 1,
     storyId: 'bar',
     notes: '',
@@ -28,11 +31,9 @@ describe('EditEvent.vue', () => {
       event: {
         namespaced: true,
         getters: {
-          getEventById: jest.fn().mockReturnValueOnce(
-            (): any => {
-              return event;
-            },
-          ),
+          getEventById: jest.fn().mockReturnValueOnce((): any => {
+            return event;
+          }),
           getEventsByStoryId: jest.fn().mockReturnValueOnce((): any => [event] as IEvent[]),
         },
         actions: {
@@ -45,15 +46,14 @@ describe('EditEvent.vue', () => {
         getters: {
           allCharacters: jest.fn(),
           ntsByStoryId: jest.fn().mockReturnValueOnce((): any => [event] as IEvent[]),
-          getCharacterById: jest.fn().mockReturnValueOnce(
-            (): any => {
-              return {
-                id: 'foo',
-              };
-            },
-          ),
+          getCharacterById: jest.fn().mockReturnValueOnce((): any => {
+            return {
+              id: 'foo',
+            };
+          }),
         },
       },
+      story: StoryModule,
     };
   });
 

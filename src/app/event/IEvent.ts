@@ -3,6 +3,8 @@ export interface IEvent {
   storyId: string;
   title: string;
   characters: string[];
+  places: string[];
+  items: string[];
   chapter: number;
   storylineOrder: number;
   storyline: number;

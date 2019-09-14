@@ -4,6 +4,9 @@ import { i18n } from '@shared/plugins/i18n/i18n';
 import Story from './Story.vue';
 import { IEvent } from '../../event/IEvent';
 import { AppModule } from '@/app/app/module';
+import { CharacterModule } from '@/app/character/module';
+import { PlaceModule } from '@/app/place/module';
+import { ItemModule } from '@/app/item/module';
 
 const localVue = createLocalVue();
 
@@ -15,46 +18,47 @@ describe('Story.vue', () => {
     id: 'foo',
     date: '2001-01-01 01:01:01',
     storyline: 1,
-    characters: ['foo'],
+    characters: [],
     chapter: 1,
     storyId: 'bar',
     notes: '',
     storylineOrder: 1,
     title: 'TEST',
+    items: [],
+    places: [],
   };
   beforeEach(() => {
     storeModules = {
       event: {
         namespaced: true,
         getters: {
-          getEventsByStoryId: jest.fn().mockReturnValueOnce(
-            (): any => [
-              event,
-              {
-                ...event,
-                id: 'bar',
-                date: '1999-09-09 09:09:09',
-              },
-            ],
-          ),
+          getEventsByStoryId: jest.fn().mockReturnValueOnce((): any => [
+            event,
+            {
+              ...event,
+              id: 'bar',
+              date: '1999-09-09 09:09:09',
+            },
+          ]),
         },
       },
       story: {
         namespaced: true,
         getters: {
-          getStoryById: jest.fn().mockReturnValueOnce(
-            (): any => {
-              return {
-                title: 'test',
-              };
-            },
-          ),
+          getStoryById: jest.fn().mockReturnValueOnce((): any => {
+            return {
+              title: 'test',
+            };
+          }),
         },
         actions: {
           setCurrentStory: jest.fn(),
         },
       },
       app: AppModule,
+      character: CharacterModule,
+      place: PlaceModule,
+      item: ItemModule,
     };
   });
 
@@ -67,6 +71,7 @@ describe('Story.vue', () => {
       mocks: {
         $route: { params: { id: 'foo' } },
       },
+      stubs: ['router-link'],
     }) as any;
 
     expect(storeModules.story.getters.getStoryById).toHaveBeenCalled();
@@ -84,13 +89,14 @@ describe('Story.vue', () => {
       mocks: {
         $route: { params: { id: 'foo' } },
       },
+      stubs: ['router-link'],
     }) as any;
 
     expect(wrapper.vm.view).toBe('print');
     expect(wrapper.vm.orderedEvents).toEqual([
       {
         chapter: 1,
-        characters: ['foo'],
+        characters: [],
         date: '2001-01-01 01:01:01',
         id: 'foo',
         notes: '',
@@ -98,10 +104,12 @@ describe('Story.vue', () => {
         storyline: 1,
         storylineOrder: 1,
         title: 'TEST',
+        items: [],
+        places: [],
       },
       {
         chapter: 1,
-        characters: ['foo'],
+        characters: [],
         date: '1999-09-09 09:09:09',
         id: 'bar',
         notes: '',
@@ -109,6 +117,8 @@ describe('Story.vue', () => {
         storyline: 1,
         storylineOrder: 1,
         title: 'TEST',
+        items: [],
+        places: [],
       },
     ]);
 
@@ -117,7 +127,7 @@ describe('Story.vue', () => {
     expect(wrapper.vm.orderedEvents).toEqual([
       {
         chapter: 1,
-        characters: ['foo'],
+        characters: [],
         date: '1999-09-09 09:09:09',
         id: 'bar',
         notes: '',
@@ -125,10 +135,12 @@ describe('Story.vue', () => {
         storyline: 1,
         storylineOrder: 1,
         title: 'TEST',
+        items: [],
+        places: [],
       },
       {
         chapter: 1,
-        characters: ['foo'],
+        characters: [],
         date: '2001-01-01 01:01:01',
         id: 'foo',
         notes: '',
@@ -136,6 +148,8 @@ describe('Story.vue', () => {
         storyline: 1,
         storylineOrder: 1,
         title: 'TEST',
+        items: [],
+        places: [],
       },
     ]);
   });
@@ -149,27 +163,28 @@ describe('Story.vue', () => {
       mocks: {
         $route: { params: { id: 'foo' } },
       },
+      stubs: ['router-link'],
     }) as any;
 
     expect(wrapper.vm.view).toBe('print');
 
     wrapper
       .findAll('button')
-      .at(9)
+      .at(5)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('storyline');
 
     wrapper
       .findAll('button')
-      .at(9)
+      .at(5)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('time');
 
     wrapper
       .findAll('button')
-      .at(9)
+      .at(5)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('print');

@@ -15,6 +15,12 @@
 
         <vue-grid-row>
           <vue-grid-item>
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
+          </vue-grid-item>
+        </vue-grid-row>
+
+        <vue-grid-row>
+          <vue-grid-item>
             <vue-input
               autofocus=""
               name="title"
@@ -54,15 +60,7 @@
       </vue-grid>
     </form>
 
-    <vue-mobile-menu slot="sidebar">
-      <vue-button
-        @click="$router.push('/')"
-        :aria-label="$t('common.back' /* Back */)"
-        :title="$t('common.back' /* Back */)"
-      >
-        <vue-icon-arrow-left />
-      </vue-button>
-    </vue-mobile-menu>
+    <vue-mobile-menu slot="sidebar"> </vue-mobile-menu>
   </vue-layout>
 </template>
 
@@ -81,6 +79,7 @@ import VueHeadline from '@components/VueHeadline/VueHeadline.vue';
 import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   name: 'EditStory',
@@ -91,6 +90,7 @@ export default {
     title: 'Chaptr | Edit Story',
   },
   components: {
+    VueBreadcrumb,
     VueIconArrowLeft,
     VueMobileMenu,
     VueLayout,
@@ -106,6 +106,17 @@ export default {
   computed: {
     ...mapGetters('story', ['getStoryById']),
     ...mapGetters('app', ['menuPosition']),
+    breadcrumbItems() {
+      if (this.story && this.story.id === null) {
+        return [{ label: 'Stories', href: '/' }, { label: 'Add a new Story', href: '/' }];
+      } else if (this.story && this.story.id !== null) {
+        return [
+          { label: 'Stories', href: '/' },
+          { label: this.story.title, href: `/story/${this.story.id}` },
+          { label: 'Edit Story', href: '/' },
+        ];
+      }
+    },
   },
   methods: {
     ...mapActions('story', ['addStory', 'updateStory']),

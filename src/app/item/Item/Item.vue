@@ -11,6 +11,12 @@
         </vue-grid-row>
 
         <vue-grid-row>
+          <vue-grid-item>
+            <vue-breadcrumb :items="breadcrumbItems"></vue-breadcrumb>
+          </vue-grid-item>
+        </vue-grid-row>
+
+        <vue-grid-row>
           <vue-grid-item fill v-for="item in allItems" :key="item.id" :class="$style.card">
             <vue-card>
               <template slot="header">
@@ -46,14 +52,6 @@
 
       <vue-mobile-menu slot="sidebar">
         <vue-button
-          @click="$router.push(`/story/${currentStory}`)"
-          :aria-label="$t('common.back' /* Back */)"
-          :title="$t('common.back' /* Back */)"
-        >
-          <vue-icon-arrow-left />
-        </vue-button>
-
-        <vue-button
           @click="$router.push('/item/edit')"
           :aria-label="$t('common.add.item' /* Add a new Item */)"
           :title="$t('common.add.item' /* Add a new Item */)"
@@ -79,12 +77,14 @@ import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
+import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 
 export default {
   metaInfo: {
     title: 'Items',
   },
   components: {
+    VueBreadcrumb,
     VueIconAdd,
     VueIconArrowLeft,
     VueMobileMenu,
@@ -102,6 +102,9 @@ export default {
     ...mapGetters('item', ['allItems']),
     ...mapGetters('story', ['currentStory']),
     ...mapGetters('app', ['menuPosition']),
+    breadcrumbItems() {
+      return [{ label: 'Stories', href: '/' }, { label: 'Items', href: '/item' }];
+    },
   },
   methods: {
     ...mapActions('app', ['changeMenuPosition']),
