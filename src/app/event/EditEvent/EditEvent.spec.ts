@@ -118,7 +118,7 @@ describe('EditEvent.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.event.actions.addEvent).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should update event', () => {
@@ -147,7 +147,7 @@ describe('EditEvent.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.event.actions.updateEvent).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should search for characters', () => {

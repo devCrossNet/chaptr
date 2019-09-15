@@ -222,7 +222,7 @@
               {{ $t('common.save' /* Save */) }}
             </vue-button>
 
-            <vue-button ghost as="router-link" :target="`/story/${$route.params.storyId}`">
+            <vue-button ghost @click="$router.go(-1)">
               {{ $t('common.cancel' /* Cancel */) }}
             </vue-button>
           </vue-grid-item>
@@ -439,8 +439,6 @@ export default {
       } else {
         this.updateEvent(this.event);
       }
-
-      this.$router.push(`/story/${storyId}`);
     },
     getCharacters(query: string) {
       this.characters = this.allCharacters
