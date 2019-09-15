@@ -142,7 +142,7 @@ export default {
           const character: ICharacter = this.getCharacterById(id);
 
           if (character.images) {
-            images = [...images, ...character.images];
+            images = [...images, character.images[0]];
           }
         });
 
@@ -151,7 +151,7 @@ export default {
           const place: IPlace = this.getPlaceById(id);
 
           if (place.images) {
-            images = [...images, ...place.images];
+            images = [...images, place.images[0]];
           }
         });
 
@@ -160,7 +160,7 @@ export default {
           const item: IItem = this.getItemById(id);
 
           if (item.images) {
-            images = [...images, ...item.images];
+            images = [...images, item.images[0]];
           }
         });
 
