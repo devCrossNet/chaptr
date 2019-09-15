@@ -37,6 +37,30 @@
           <vue-icon-calendar />
         </vue-button>
         <vue-button
+          primary
+          @click="$router.push('/character/edit')"
+          :aria-label="$t('common.add.character' /* Add a new Character */)"
+          :title="$t('common.add.character' /* Add a new Character */)"
+        >
+          <vue-icon-user />
+        </vue-button>
+        <vue-button
+          primary
+          @click="$router.push('/place/edit')"
+          :aria-label="$t('common.add.place' /* Add a new Place */)"
+          :title="$t('common.add.place' /* Add a new Place */)"
+        >
+          <vue-icon-globe />
+        </vue-button>
+        <vue-button
+          primary
+          @click="$router.push('/item/edit')"
+          :aria-label="$t('common.add.item' /* Add a new Item */)"
+          :title="$t('common.add.item' /* Add a new Item */)"
+        >
+          <vue-icon-suit-case />
+        </vue-button>
+        <vue-button
           @click="$router.push(`/story/edit/${story.id}`)"
           :aria-label="$t('common.edit' /* Edit */)"
           :title="$t('common.edit' /* Edit */)"

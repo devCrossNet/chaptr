@@ -96,7 +96,7 @@ describe('EditItem.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.item.actions.addItem).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should update item', () => {
@@ -125,6 +125,6 @@ describe('EditItem.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.item.actions.updateItem).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 });

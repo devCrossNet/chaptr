@@ -173,10 +173,9 @@ export default {
     },
     onSubmit() {
       this.save();
-      this.goBack();
     },
     goBack() {
-      this.$router.push('/place');
+      this.$router.go(-1);
     },
   },
   data(): { place: IPlace } {

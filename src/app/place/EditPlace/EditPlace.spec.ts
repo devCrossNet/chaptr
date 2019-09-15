@@ -96,7 +96,7 @@ describe('EditPlace.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.place.actions.addPlace).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should update place', () => {
@@ -125,6 +125,6 @@ describe('EditPlace.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.place.actions.updatePlace).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 });

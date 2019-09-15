@@ -171,10 +171,9 @@ export default {
     },
     onSubmit() {
       this.save();
-      this.goBack();
     },
     goBack() {
-      this.$router.push('/item');
+      this.$router.go(-1);
     },
   },
   data(): { item: IItem } {

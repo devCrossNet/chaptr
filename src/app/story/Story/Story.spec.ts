@@ -170,21 +170,21 @@ describe('Story.vue', () => {
 
     wrapper
       .findAll('button')
-      .at(5)
+      .at(8)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('storyline');
 
     wrapper
       .findAll('button')
-      .at(5)
+      .at(8)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('time');
 
     wrapper
       .findAll('button')
-      .at(5)
+      .at(8)
       .trigger('click');
 
     expect(wrapper.vm.view).toBe('print');

@@ -103,7 +103,7 @@ describe('EditCharacter.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.character.actions.addCharacter).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should update character', () => {
@@ -132,6 +132,6 @@ describe('EditCharacter.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.character.actions.updateCharacter).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 });

@@ -265,10 +265,9 @@ export default {
     },
     onSubmit() {
       this.save();
-      this.goBack();
     },
     goBack() {
-      this.$router.push('/character');
+      this.$router.go(-1);
     },
   },
   data(): { character: ICharacter } {
