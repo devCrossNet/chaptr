@@ -76,7 +76,6 @@
 import { saveAs } from 'file-saver';
 import { mapActions, mapGetters } from 'vuex';
 import cloneDeep from 'lodash/cloneDeep';
-import merge from 'lodash/merge';
 import { IState } from '../../state';
 import { HttpService } from '@shared/services/HttpService/HttpService';
 import { addNotification } from '@components/VueNotificationStack/utils';
@@ -120,8 +119,10 @@ export default {
   methods: {
     ...mapActions('app', ['changeMenuPosition', 'changeLocale']),
     replaceState(newState: IState) {
-      const oldState: IState = cloneDeep(this.$store.state);
-      this.$store.replaceState(merge(oldState, newState));
+      newState.app = this.$store.state.app;
+      newState.route = this.$store.state.route;
+
+      this.$store.replaceState(newState);
       this.changeLocale('foo');
       this.changeLocale(newState.app.locale);
     },
