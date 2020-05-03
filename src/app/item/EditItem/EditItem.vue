@@ -109,6 +109,7 @@ import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import { IItem } from '@/app/item/IItem';
 import VueImageGallery from '@components/VueImageGallery/VueImageGallery.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import { Route } from 'vue-router';
 
 export default {
   name: 'EditItem',
@@ -151,12 +152,12 @@ export default {
         this.item = Object.assign({}, this.item, this.getItemById(this.$route.params.id));
       }
     },
-    save() {
+    async save() {
       if (this.item.id === null) {
         this.item.id = getGUID();
-        this.addItem(this.item);
+        await this.addItem(this.item);
       } else {
-        this.updateItem(this.item);
+        await this.updateItem(this.item);
       }
     },
     onAddImageUrl(imageUrl: string) {
@@ -190,6 +191,11 @@ export default {
   },
   mounted() {
     this.load();
+  },
+  async beforeRouteLeave(to: Route, from: Route, next: any) {
+    await this.save();
+
+    next();
   },
 };
 </script>

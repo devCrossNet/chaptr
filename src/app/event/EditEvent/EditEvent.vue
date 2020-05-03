@@ -54,6 +54,7 @@
                       :current-date="event.date ? new Date(event.date) : new Date()"
                       :first-day-of-week="1"
                       :placeholder="$t('common.date' /* Date */)"
+                      :events="events"
                       @change="event.date = $event.toUTCString()"
                     />
                   </vue-grid-item>
@@ -110,6 +111,30 @@
                       :placeholder="$t('common.notes' /* Notes */)"
                       v-model="event.notes"
                     />
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row v-if="prevEvent">
+                  <vue-grid-item>
+                    <strong>{{ prevEvent.title }}</strong>
+                    <br />
+                    <vue-truncate :lines="2">
+                      <vue-markdown>
+                        {{ prevEvent.notes }}
+                      </vue-markdown>
+                    </vue-truncate>
+                  </vue-grid-item>
+                </vue-grid-row>
+                <vue-grid-row v-if="nextEvent">
+                  <vue-grid-item>
+                    <br />
+                    <br />
+                    <strong>{{ nextEvent.title }}</strong>
+                    <br />
+                    <vue-truncate :lines="2">
+                      <vue-markdown>
+                        {{ nextEvent.notes }}
+                      </vue-markdown>
+                    </vue-truncate>
                   </vue-grid-item>
                 </vue-grid-row>
               </vue-tab-item>
@@ -289,6 +314,10 @@ import VueIconGlobe from '@components/icons/VueIconGlobe/VueIconGlobe.vue';
 import VueIconSuitCase from '@components/icons/VueIconSuitCase/VueIconSuitCase.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
 import { IStory } from '@/app/story/IStory';
+import shuffle from 'lodash/shuffle';
+import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
+import VueTruncate from '@components/VueTruncate/VueTruncate.vue';
+import { Route } from 'vue-router';
 
 interface IData {
   event: IEvent;
@@ -299,6 +328,7 @@ interface IData {
   storylineOrders: any[];
   storylines: any[];
   story: IStory;
+  events: IEvent[];
 }
 
 export default {
@@ -376,10 +406,30 @@ export default {
         }
       });
 
-      return images;
+      return shuffle(images);
+    },
+    prevEvent() {
+      const idx: number = this.events.findIndex((event: IEvent) => event.id === this.event.id);
+
+      if (idx > 0) {
+        return this.events[idx - 1];
+      } else {
+        return null;
+      }
+    },
+    nextEvent() {
+      const idx: number = this.events.findIndex((event: IEvent) => event.id === this.event.id);
+
+      if (idx < this.events.length) {
+        return this.events[idx + 1];
+      } else {
+        return null;
+      }
     },
   },
   components: {
+    VueTruncate,
+    VueMarkdown,
     VueBreadcrumb,
     VueIconSuitCase,
     VueIconGlobe,
@@ -424,20 +474,21 @@ export default {
       storylineOrders: [],
       storylines: [],
       story: null,
+      events: [],
     };
   },
   methods: {
     ...mapActions('event', ['addEvent', 'updateEvent']),
     ...mapActions('app', ['changeMenuPosition']),
-    onSubmit() {
+    async onSubmit() {
       const storyId: string = this.$route.params.storyId;
 
       if (this.event.id === null) {
         this.event.id = getGUID();
         this.event.storyId = storyId;
-        this.addEvent(this.event);
+        await this.addEvent(this.event);
       } else {
-        this.updateEvent(this.event);
+        await this.updateEvent(this.event);
       }
     },
     getCharacters(query: string) {
@@ -512,30 +563,35 @@ export default {
         this.storylines.push({ label: i.toString(), value: i.toString() });
       }
     },
-    fillStoryLineOrders(storyEvents: IEvent[]) {
-      for (let i = 0; i < storyEvents.length; i++) {
-        this.storylineOrders.push({ label: `${i + 1} - ${storyEvents[i].title}`, value: i.toString() });
+    fillStoryLineOrders(events: IEvent[]) {
+      for (let i = 0; i < events.length; i++) {
+        this.storylineOrders.push({ label: `${i + 1} - ${events[i].title}`, value: i.toString() });
       }
 
       this.storylineOrders.push({
-        label: `${storyEvents.length + 1} - ${this.$t('common.event.new' /* New Event */)}`,
-        value: storyEvents.length.toString(),
+        label: `${events.length + 1} - ${this.$t('common.event.new' /* New Event */)}`,
+        value: events.length.toString(),
       });
-      this.event.storylineOrder = this.event.storylineOrder === -1 ? storyEvents.length : this.event.storylineOrder;
+      this.event.storylineOrder = this.event.storylineOrder === -1 ? events.length : this.event.storylineOrder;
     },
   },
   mounted() {
-    const storyEvents: IEvent[] = this.getEventsByStoryId(this.$route.params.storyId);
+    this.events = this.getEventsByStoryId(this.$route.params.storyId);
 
     this.story = this.getStoryById(this.$route.params.storyId);
 
     if (this.$route.params.id) {
-      this.event = Object.assign({}, this.event, this.getEventById(this.$route.params.id));
+      this.event = this.getEventById(this.$route.params.id);
     }
 
     this.fillChapters();
     this.fillStoryLines();
-    this.fillStoryLineOrders(storyEvents);
+    this.fillStoryLineOrders(this.events);
+  },
+  async beforeRouteLeave(to: Route, from: Route, next: any) {
+    await this.onSubmit();
+
+    next();
   },
 };
 </script>

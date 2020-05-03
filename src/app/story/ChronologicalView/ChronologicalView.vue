@@ -1,28 +1,18 @@
 <template>
   <vue-grid-row :class="$style.chronologicalView">
     <vue-grid-item fill v-for="event in events" :key="event.id">
-      <vue-card>
+      <vue-card :class="$style.card" @click.native="$router.push(`/event/edit/${$route.params.id}/${event.id}`)">
         <template slot="header">{{ event.title }}</template>
 
-        <div v-show="event.notes && event.notes !== ''">
-          <vue-grid-row>
-            <vue-grid-item :class="$style.characters">
-              <label>{{ $t('common.characters' /* Characters */) }}</label>
-              <ul>
-                <li v-for="characterId in event.characters" :key="characterId">
-                  {{ getCharacterById(characterId).name }}
-                </li>
-              </ul>
-            </vue-grid-item>
-
-            <vue-grid-item>
-              <label>{{ $t('common.notes' /* Notes */) }}</label>
+        <vue-grid-row v-if="event.notes">
+          <vue-grid-item>
+            <vue-truncate :lines="3">
               <vue-markdown>
                 {{ event.notes }}
               </vue-markdown>
-            </vue-grid-item>
-          </vue-grid-row>
-        </div>
+            </vue-truncate>
+          </vue-grid-item>
+        </vue-grid-row>
 
         <vue-button
           slot="footer"
@@ -44,10 +34,11 @@ import VueCard from '@components/VueCard/VueCard.vue';
 import VueMarkdown from '@components/VueMarkdown/VueMarkdown.vue';
 import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
+import VueTruncate from '@components/VueTruncate/VueTruncate.vue';
 
 export default {
   name: 'ChronologicalView',
-  components: { VueIconPencil, VueButton, VueMarkdown, VueCard, VueGridItem, VueGridRow },
+  components: { VueTruncate, VueIconPencil, VueButton, VueMarkdown, VueCard, VueGridItem, VueGridRow },
   props: {
     events: {
       type: Array,
@@ -70,15 +61,8 @@ export default {
 @import '~@/app/shared/design-system';
 
 .chronologicalView {
-  label {
-    display: block;
-    font-family: $font-family-headings;
-    font-weight: $font-weight-bold;
-    margin: $space-8 0;
-  }
-
-  .characters {
-    flex: 0 1 25%;
+  .card {
+    cursor: pointer;
   }
 }
 </style>

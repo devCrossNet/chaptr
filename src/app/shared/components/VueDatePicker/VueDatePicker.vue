@@ -20,6 +20,7 @@
         :selected-date="date"
         :start-date="startDate"
         :end-date="endDate"
+        :events="events"
         @close="show = false"
         @change="onChange"
       >
@@ -41,48 +42,20 @@ export default {
     VueCalendar,
   },
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    minDate: {
-      type: Date,
-    },
-    maxDate: {
-      type: Date,
-    },
-    firstDayOfWeek: {
-      type: Number,
-      default: 0,
-    },
-    placeholder: {
-      type: String,
-    },
-    startDate: {
-      type: Date,
-    },
-    endDate: {
-      type: Date,
-    },
-    currentDate: {
-      type: Date,
-    },
-    required: {
-      type: Boolean,
-    },
-    disabled: {
-      type: Boolean,
-    },
-    readonly: {
-      type: Boolean,
-    },
-    message: {
-      type: String,
-    },
+    name: { type: String, required: true },
+    id: { type: String, required: true },
+    minDate: { type: Date, default: null },
+    maxDate: { type: Date, default: null },
+    firstDayOfWeek: { type: Number, default: 0 },
+    placeholder: { type: String, default: '' },
+    startDate: { type: Date, default: null },
+    endDate: { type: Date, default: null },
+    currentDate: { type: Date, default: null },
+    required: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    readonly: { type: Boolean, default: false },
+    message: { type: String, default: '' },
+    events: { type: Array, default: [] },
   },
   data(): any {
     return {

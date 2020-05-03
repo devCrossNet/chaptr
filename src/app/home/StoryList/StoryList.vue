@@ -11,11 +11,15 @@
 
       <vue-grid-item v-for="story in stories" :key="story.id" :class="$style.item">
         <vue-card :class="$style.card">
-          <template slot="header">{{ story.title }}</template>
+          <template slot="header">
+            {{ story.title }} ({{ wordCount(story.id) }} words)
+          </template>
 
-          <vue-markdown>
-            {{ story.abstract }}
-          </vue-markdown>
+          <vue-truncate :lines="3">
+            <vue-markdown>
+              {{ story.abstract }}
+            </vue-markdown>
+          </vue-truncate>
 
           <vue-button slot="footer" color="secondary" as="router-link" :target="`/story/${story.id}`">
             <vue-icon-pencil />
@@ -54,10 +58,14 @@ import VueButton from '@components/VueButton/VueButton.vue';
 import VueIconPencil from '@components/icons/VueIconPencil/VueIconPencil.vue';
 import VueIconAdd from '@components/icons/VueIconAdd/VueIconAdd.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import VueTruncate from '@components/VueTruncate/VueTruncate.vue';
+import { mapGetters } from 'vuex';
+import { IEvent } from '@/app/event/IEvent';
 
 export default {
   name: 'StoryList',
   components: {
+    VueTruncate,
     VueBreadcrumb,
     VueIconAdd,
     VueIconPencil,
@@ -79,6 +87,19 @@ export default {
     return {};
   },
   computed: {
+    ...mapGetters('event', ['getEventsByStoryId']),
+    wordCount() {
+      return (storyId: number) => {
+        const events: IEvent[] = this.getEventsByStoryId(storyId);
+        let wordCount = 0;
+
+        events.forEach((event) => {
+          wordCount += event.notes.split(' ').length;
+        });
+
+        return wordCount;
+      };
+    },
     hasStories() {
       return this.stories.length > 0;
     },

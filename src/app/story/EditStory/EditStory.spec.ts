@@ -22,11 +22,9 @@ describe('EditStory.vue', () => {
       story: {
         namespaced: true,
         getters: {
-          getStoryById: jest.fn().mockReturnValueOnce(
-            (): any => {
-              return story;
-            },
-          ),
+          getStoryById: jest.fn().mockReturnValueOnce((): any => {
+            return story;
+          }),
         },
         actions: {
           addStory: jest.fn(),
@@ -95,7 +93,7 @@ describe('EditStory.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.story.actions.addStory).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 
   test('should update story', () => {
@@ -122,6 +120,6 @@ describe('EditStory.vue', () => {
 
     wrapper.vm.onSubmit();
     expect(storeModules.story.actions.updateStory).toHaveBeenCalled();
-    expect($router.push).toHaveBeenCalled();
+    expect($router.push).not.toHaveBeenCalled();
   });
 });

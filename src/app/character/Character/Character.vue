@@ -16,10 +16,10 @@
 
         <vue-grid-row>
           <vue-grid-item fill v-for="character in allCharacters" :key="character.id" :class="$style.card">
-            <vue-card>
+            <vue-card @click.native="$router.push(`/character/edit/${character.id}`)">
               <template slot="header">
-                {{ character.name + ` (${getAge(character)})` }}</template
-              >
+                {{ character.name + ` (${getAge(character)})` }}
+              </template>
 
               <div>
                 <label>{{ $t('common.characteristics' /* Characteristics */) }}</label>
@@ -121,6 +121,7 @@ export default {
   }
 
   .card {
+    cursor: pointer;
     display: flex;
   }
 }

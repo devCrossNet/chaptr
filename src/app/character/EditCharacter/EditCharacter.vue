@@ -199,6 +199,7 @@ import VueTabItem from '@components/VueTabGroup/VueTabItem/VueTabItem.vue';
 import VueTextarea from '@components/VueTextarea/VueTextarea.vue';
 import VueImageGallery from '@components/VueImageGallery/VueImageGallery.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import { Route } from 'vue-router';
 
 export default {
   name: 'EditCharacter',
@@ -245,12 +246,12 @@ export default {
         this.character = Object.assign({}, this.character, this.getCharacterById(this.$route.params.id));
       }
     },
-    save() {
+    async save() {
       if (this.character.id === null) {
         this.character.id = getGUID();
-        this.addCharacter(this.character);
+        await this.addCharacter(this.character);
       } else {
-        this.updateCharacter(this.character);
+        await this.updateCharacter(this.character);
       }
     },
     onAddImageUrl(imageUrl: string) {
@@ -291,6 +292,11 @@ export default {
   },
   mounted() {
     this.load();
+  },
+  async beforeRouteLeave(to: Route, from: Route, next: any) {
+    await this.save();
+
+    next();
   },
 };
 </script>

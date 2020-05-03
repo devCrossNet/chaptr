@@ -208,7 +208,7 @@ describe('VueCalendar.vue', () => {
       localVue,
       i18n,
       propsData: {
-        today: new Date(2000, 1, 1),
+        today: new Date(),
       },
     });
 
@@ -217,7 +217,7 @@ describe('VueCalendar.vue', () => {
     const years = wrapper.find(`.year`).findAll('div');
 
     expect(years).toHaveLength(102);
-    expect(years.at(1).text()).toBe('1969');
-    expect(years.at(years.length - 1).text()).toBe('2069');
+    expect(years.at(1).text()).toBe((today.getFullYear() - 50).toString());
+    expect(years.at(years.length - 1).text()).toBe((today.getFullYear() + 50).toString());
   });
 });

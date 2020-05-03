@@ -164,16 +164,18 @@ export default {
       return this.events;
     },
     chapters() {
-      const chapters: { name: string; events: IEvent[] }[] = [];
+      const chapters: { name: string; events: IEvent[]; wordCount: number }[] = [];
       const findChapterIndex = (name: string) => chapters.findIndex((c) => c.name === name);
 
       this.events.forEach((event: IEvent) => {
         let chapterIndex: number = findChapterIndex(event.chapter.toString());
+        let eventWordCount: number = event.notes.split(' ').length;
 
         if (chapterIndex > -1) {
           chapters[chapterIndex].events.push(event);
+          chapters[chapterIndex].wordCount += eventWordCount;
         } else {
-          chapters.push({ name: event.chapter.toString(), events: [] });
+          chapters.push({ name: event.chapter.toString(), events: [], wordCount: eventWordCount });
           chapterIndex = findChapterIndex(event.chapter.toString());
           chapters[chapterIndex].events.push(event);
         }

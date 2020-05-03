@@ -2,15 +2,13 @@
   <div :class="$style.vueTruncate">
     <div :class="$style.text" ref="text">
       <slot />
-
-      <div :class="$style.fadeOut" ref="fadeOut" :style="{ height: `${height}px` }" v-show="isTruncated"></div>
     </div>
 
-    <a v-show="isTruncated && showMoreButton" href="#" @click.prevent="showMore">
+    <a v-show="isTruncated && showMoreButton" href="#" @click.prevent.stop="showMore">
       {{ $t('components.truncate.showMore' /* Show more */) }}
     </a>
 
-    <a v-show="isTruncated && !showMoreButton" href="#" @click.prevent="showLess">
+    <a v-show="isTruncated && !showMoreButton" href="#" @click.prevent.stop="showLess">
       {{ $t('components.truncate.showLess' /* Show less */) }}
     </a>
   </div>
@@ -115,16 +113,5 @@ export default {
 .text {
   position: relative;
   overflow: hidden;
-}
-
-.fadeOut {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  @include background-gradient(
-    rgba(red($brand-bg-color), green($brand-bg-color), blue($brand-bg-color), 0),
-    $brand-bg-color,
-    'vertical'
-  );
 }
 </style>

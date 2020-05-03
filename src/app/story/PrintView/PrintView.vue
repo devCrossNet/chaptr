@@ -4,67 +4,27 @@
       <vue-accordion multiple>
         <vue-accordion-item
           initOpen
-          :title="`Chapter: ${chapter.name}`"
+          :title="`Chapter: ${chapter.name} (${chapter.wordCount} words)`"
           v-for="chapter in chapters"
           :key="chapter.name"
         >
           <vue-grid-row v-for="event in chapter.events" :key="event.id">
             <vue-grid-item>
-              <vue-card>
-                <template slot="header">{{ event.title }}</template>
+              <vue-card
+                :class="$style.card"
+                @click.native="$router.push(`/event/edit/${$route.params.id}/${event.id}`)"
+              >
+                <template slot="header">
+                  {{ event.title }} <span v-if="event.date">({{ $d(new Date(event.date), 'datePicker', 'de') }})</span>
+                </template>
 
-                <vue-grid-row :class="$style.meta">
+                <vue-grid-row v-if="event.notes">
                   <vue-grid-item>
-                    <vue-grid-row>
-                      <vue-grid-item>
-                        <label>{{ $t('common.characters' /* Characters */) }}</label>
-                        <ul>
-                          <li v-for="characterId in event.characters" :key="characterId">
-                            <router-link :to="`/character/edit/${getCharacterById(characterId).id}`">
-                              {{ getCharacterById(characterId).name }}
-                            </router-link>
-                          </li>
-                        </ul>
-                      </vue-grid-item>
-                      <vue-grid-item>
-                        <label>{{ $t('common.places' /* Places */) }}</label>
-                        <ul>
-                          <li v-for="placeId in event.places" :key="placeId">
-                            <router-link :to="`/place/edit/${getPlaceById(placeId).id}`">
-                              {{ getPlaceById(placeId).name }}
-                            </router-link>
-                          </li>
-                        </ul>
-                      </vue-grid-item>
-                      <vue-grid-item>
-                        <label>{{ $t('common.items' /* Items */) }}</label>
-                        <ul>
-                          <li v-for="itemId in event.items" :key="itemId">
-                            <router-link :to="`/item/edit/${getItemById(itemId).id}`">
-                              {{ getItemById(itemId).name }}
-                            </router-link>
-                          </li>
-                        </ul>
-                      </vue-grid-item>
-                    </vue-grid-row>
-                  </vue-grid-item>
-                  <vue-grid-item>
-                    <ul :class="$style.thumbnails">
-                      <li
-                        v-for="(image, idx) in images(event)"
-                        :key="`${event.id}-image-${idx}`"
-                        :style="{ backgroundImage: `url(${image})` }"
-                      ></li>
-                    </ul>
-                  </vue-grid-item>
-                </vue-grid-row>
-
-                <vue-grid-row>
-                  <vue-grid-item>
-                    <label>{{ $t('common.notes' /* Notes */) }}</label>
-                    <vue-markdown>
-                      {{ event.notes }}
-                    </vue-markdown>
+                    <vue-truncate :lines="3">
+                      <vue-markdown>
+                        {{ event.notes }}
+                      </vue-markdown>
+                    </vue-truncate>
                   </vue-grid-item>
                 </vue-grid-row>
 
@@ -98,10 +58,12 @@ import { IEvent } from '@/app/event/IEvent';
 import { ICharacter } from '@/app/character/ICharacter';
 import { IPlace } from '@/app/place/IPlace';
 import { IItem } from '@/app/item/IItem';
+import VueTruncate from '@components/VueTruncate/VueTruncate.vue';
 
 export default {
   name: 'PrintView',
   components: {
+    VueTruncate,
     VueIconPencil,
     VueButton,
     VueMarkdown,
@@ -174,39 +136,8 @@ export default {
 @import '~@/app/shared/design-system';
 
 .printView {
-  label {
-    display: block;
-    font-family: $font-family-headings;
-    font-weight: $font-weight-bold;
-    margin: $space-8 0;
-  }
-
-  .meta {
-    ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-
-      li {
-        display: block;
-        height: $space-24;
-      }
-    }
-  }
-
-  .thumbnails {
-    display: flex;
-    overflow-x: scroll;
-
-    li {
-      flex: 0 0 25%;
-      height: 250px !important;
-      display: inline-flex;
-      background-size: cover;
-      background-position: center;
-      margin: 0 $space-4 $space-4 0;
-      box-shadow: inset 0 0 4px 0 rgba(18, 19, 21, 0.12), inset 0 4px 12px 0 rgba(18, 19, 21, 0.5);
-    }
+  .card {
+    cursor: pointer;
   }
 }
 </style>

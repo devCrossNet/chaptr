@@ -111,6 +111,7 @@ import { getGUID } from '@vuesion/utils/dist/randomGenerator';
 import { IPlace } from '@/app/place/IPlace';
 import VueImageGallery from '@components/VueImageGallery/VueImageGallery.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import { Route } from 'vue-router';
 
 export default {
   name: 'EditPlace',
@@ -153,12 +154,12 @@ export default {
         this.place = Object.assign({}, this.place, this.getPlaceById(this.$route.params.id));
       }
     },
-    save() {
+    async save() {
       if (this.place.id === null) {
         this.place.id = getGUID();
-        this.addPlace(this.place);
+        await this.addPlace(this.place);
       } else {
-        this.updatePlace(this.place);
+        await this.updatePlace(this.place);
       }
     },
     onAddImageUrl(imageUrl: string) {
@@ -192,6 +193,11 @@ export default {
   },
   mounted() {
     this.load();
+  },
+  async beforeRouteLeave(to: Route, from: Route, next: any) {
+    await this.save();
+
+    next();
   },
 };
 </script>

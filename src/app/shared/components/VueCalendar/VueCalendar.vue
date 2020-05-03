@@ -65,6 +65,7 @@
                 day.disabled ? $style.disabledDay : '',
                 day.selected ? $style.selectedDay : '',
               ]"
+              :title="day.event && day.event"
               v-for="(day, dayIdx) in days"
               :key="`day-${dayIdx}`"
               :tabindex="day.day ? 0 : null"
@@ -73,6 +74,7 @@
               @keydown.space.stop.prevent="setByDay(day)"
               @click="setByDay(day)"
             >
+              <span v-if="day.event" :class="$style.eventBadge"></span>
               <span>{{ day.day }}</span>
             </td>
           </tr>
@@ -106,6 +108,7 @@
 import chunk from 'lodash/chunk';
 import VueButton from '../VueButton/VueButton.vue';
 import VueHeadline from '../VueHeadline/VueHeadline.vue';
+import { IEvent } from '@/app/event/IEvent';
 
 interface IData {
   selecting: string;
@@ -122,6 +125,8 @@ interface IDay {
   currentDay: boolean;
   selected: boolean;
   disabled: boolean;
+  date: Date;
+  event: IEvent;
 }
 
 interface IYear {
@@ -136,29 +141,14 @@ export default {
     VueButton,
   },
   props: {
-    today: {
-      type: Date,
-      default: () => new Date(),
-    },
-    minDate: {
-      type: Date,
-    },
-    maxDate: {
-      type: Date,
-    },
-    firstDayOfWeek: {
-      type: Number,
-      default: 0,
-    },
-    startDate: {
-      type: Date,
-    },
-    endDate: {
-      type: Date,
-    },
-    selectedDate: {
-      type: Date,
-    },
+    today: { type: Date, default: () => new Date() },
+    minDate: { type: Date, default: null },
+    maxDate: { type: Date, default: null },
+    firstDayOfWeek: { type: Number, default: 0 },
+    startDate: { type: Date, default: null },
+    endDate: { type: Date, default: null },
+    selectedDate: { type: Date, default: null },
+    events: { type: Array, default: (): any[] => [] },
   },
   computed: {
     calculatedDate(): Date {
@@ -204,7 +194,16 @@ export default {
             selected = false;
           }
 
-          return { day, currentDay, selected, disabled } as IDay;
+          const event = this.events.filter((event: IEvent) => event.date === date.toUTCString());
+
+          return {
+            day,
+            currentDay,
+            selected,
+            disabled,
+            date,
+            event: event.map((event: IEvent) => event.title).join('; '),
+          } as IDay;
         },
       );
 
@@ -415,6 +414,7 @@ export default {
       flex-wrap: wrap;
 
       td {
+        position: relative;
         &:before {
           content: '';
           float: left;
@@ -550,6 +550,18 @@ export default {
       background: $calendar-selected-day-bg;
     }
   }
+}
+
+.eventBadge {
+  display: block;
+  width: $space-4;
+  height: $space-4;
+  background: $brand-primary;
+  position: absolute !important;
+  border-radius: 50%;
+  top: $space-4 !important;
+  left: 50% !important;
+  transform: translateX(-50%);
 }
 
 .footer {

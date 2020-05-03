@@ -80,6 +80,7 @@ import VueLayout from '@components/VueLayout/VueLayout.vue';
 import VueMobileMenu from '@components/VueMobileMenu/VueMobileMenu.vue';
 import VueIconArrowLeft from '@components/icons/VueIconArrowLeft/VueIconArrowLeft.vue';
 import VueBreadcrumb from '@components/VueBreadcrumb/VueBreadcrumb.vue';
+import { Route } from 'vue-router';
 
 export default {
   name: 'EditStory',
@@ -121,12 +122,12 @@ export default {
   methods: {
     ...mapActions('story', ['addStory', 'updateStory']),
     ...mapActions('app', ['changeMenuPosition']),
-    onSubmit() {
+    async onSubmit() {
       if (this.story.id === null) {
         this.story.id = getGUID();
-        this.addStory(this.story);
+        await this.addStory(this.story);
       } else {
-        this.updateStory(this.story);
+        await this.updateStory(this.story);
       }
 
       this.$router.push(`/story/${this.story.id}`);
@@ -145,6 +146,11 @@ export default {
     if (this.$route.params.id) {
       this.story = this.getStoryById(this.$route.params.id);
     }
+  },
+  async beforeRouteLeave(to: Route, from: Route, next: any) {
+    await this.onSubmit();
+
+    next();
   },
 };
 </script>

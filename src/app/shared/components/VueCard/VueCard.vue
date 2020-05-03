@@ -1,15 +1,15 @@
 <template>
   <div :class="$style.vueCard">
     <div :class="$style.content">
-      <div :class="$style.header">
+      <div v-if="$slots.header" :class="$style.header">
         <slot name="header" />
       </div>
-      <div :class="$style.body">
+      <div v-if="$slots.default" :class="$style.body">
         <slot />
       </div>
     </div>
 
-    <div :class="$style.footer">
+    <div v-if="$slots.footer" :class="$style.footer">
       <slot name="footer" />
     </div>
   </div>

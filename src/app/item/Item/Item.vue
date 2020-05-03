@@ -18,7 +18,7 @@
 
         <vue-grid-row>
           <vue-grid-item fill v-for="item in allItems" :key="item.id" :class="$style.card">
-            <vue-card>
+            <vue-card @click.native="$router.push(`/item/edit/${item.id}`)">
               <template slot="header">
                 {{ item.name }}
               </template>
@@ -124,6 +124,7 @@ export default {
   }
 
   .card {
+    cursor: pointer;
     display: flex;
   }
 }
